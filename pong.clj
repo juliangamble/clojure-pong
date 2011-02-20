@@ -15,6 +15,11 @@
           graphics (.getDrawGraphics buffer)]
         (.setColor graphics Color/BLACK)
         (.drawLine graphics 0 0 100 100)
+
+        ; It is best to dispose() a Graphics object when done with it.
+        (.dispose graphics) 
+
+        ; Shows the contents of the backbuffer on the screen.
         (.show buffer)))
 
 (defn main []
