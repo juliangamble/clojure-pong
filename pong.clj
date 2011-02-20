@@ -1,3 +1,8 @@
+; The pong in Clojure
+;
+; References:
+; http://gpwiki.org/index.php/Java:Tutorials:Double_Buffering
+
 (import (javax.swing JFrame)
         (java.awt Color Dimension))
 
