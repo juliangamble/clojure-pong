@@ -6,7 +6,7 @@
 (def height 400)
 
 (defn main []
-    (let [frame (new JFrame)]
+    (let [frame (new JFrame "Clojure Pong")]
         (.setDefaultCloseOperation frame JFrame/EXIT_ON_CLOSE)
         (.setSize frame (new Dimension width height))
         (.show frame)))
