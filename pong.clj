@@ -10,6 +10,8 @@
         (.setDefaultCloseOperation frame JFrame/EXIT_ON_CLOSE)
         (.setSize frame (new Dimension width height))
         (.setResizable frame false)
+        (.setVisible frame true)
+        (.createBufferStrategy frame 2)
         (.show frame)))
 
 (main)
