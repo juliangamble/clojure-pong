@@ -1,9 +1,16 @@
 (import (javax.swing JFrame)
-        (java.awt Dimension))
+        (java.awt Color Dimension))
 
 ; The window size
 (def width 400)
 (def height 400)
+
+(defn drawn [frame]
+    (let [buffer (.getBufferStrategy frame)
+          graphics (.getDrawGraphics buffer)]
+        (.setColor graphics Color/BLACK)
+        (.drawLine graphics 0 0 100 100)
+        (.show buffer)))
 
 (defn main []
     (let [frame (new JFrame "Clojure Pong")]
@@ -13,6 +20,8 @@
         (.setResizable frame false)
         (.setVisible frame true)
         (.createBufferStrategy frame 2)
-        (.show frame)))
+        (.show frame)
+
+        (drawn frame)))
 
 (main)
