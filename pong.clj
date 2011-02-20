@@ -9,6 +9,7 @@
     (let [frame (new JFrame "Clojure Pong")]
         (.setDefaultCloseOperation frame JFrame/EXIT_ON_CLOSE)
         (.setSize frame (new Dimension width height))
+        (.setResizable frame false)
         (.show frame)))
 
 (main)
