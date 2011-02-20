@@ -2,6 +2,7 @@
 ;
 ; References:
 ; http://gpwiki.org/index.php/Java:Tutorials:Double_Buffering
+; http://zetcode.com/tutorials/javagamestutorial/
 
 (import (javax.swing JFrame)
         (java.awt Color Dimension))
