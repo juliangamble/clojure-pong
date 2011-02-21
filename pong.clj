@@ -41,10 +41,12 @@
         (.createBufferStrategy frame 2)
 
         (.addKeyListener frame (proxy [KeyListener] []
-            (keyPressed [e] (println "keyPressed"))
-            (keyReleased [e] (println "keyReleased"))
-            (keyTyped [e] (println "keyTyped"))))
-            
+            (keyPressed [e]
+                ; Exits when 'q' is pressed
+                (if (= (.getKeyChar e) \q) (System/exit 0) ))
+            (keyReleased [e])
+            (keyTyped [e])))
+
         (.show frame)
 
         (proxy [JFrame KeyListener] [])
