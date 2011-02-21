@@ -5,7 +5,8 @@
 ; http://zetcode.com/tutorials/javagamestutorial/
 
 (import (javax.swing JFrame)
-        (java.awt Color Dimension))
+        (java.awt Color Dimension)
+        (java.awt.event KeyListener))
 
 ; The window size
 (def width 400)
@@ -38,10 +39,18 @@
         (.setResizable frame false)
         (.setVisible frame true)
         (.createBufferStrategy frame 2)
+
+        (.addKeyListener frame (proxy [KeyListener] []
+            (keyPressed [e] (println "keyPressed"))
+            (keyReleased [e] (println "keyReleased"))
+            (keyTyped [e] (println "keyTyped"))))
+            
         (.show frame)
 
+        (proxy [JFrame KeyListener] [])
+
         (loop [time 0]
-            (println time)
+            ;(println time)
             (drawn frame time)
             (Thread/sleep 50)
             (recur (- (System/currentTimeMillis) start-time)))))
