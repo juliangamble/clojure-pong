@@ -49,8 +49,6 @@
 
         (.show frame)
 
-        (proxy [JFrame KeyListener] [])
-
         (loop [time 0]
             ;(println time)
             (drawn frame time)
