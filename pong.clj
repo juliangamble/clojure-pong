@@ -13,6 +13,9 @@
 (def width 400)
 (def height 400)
 
+; Defines a atom to store the racket position
+(def racket-pos (atom (/ height 2)))
+
 (defn drawn [frame time]
     (let [buffer (.getBufferStrategy frame)
           graphics (.getDrawGraphics buffer)]
@@ -25,8 +28,11 @@
         (.setColor graphics Color/WHITE)
         (.drawOval graphics 200 (/ time 50) 10 10)
 
+        ; Draw the racket
+        (.fillRect graphics 5 (- @racket-pos 25) 10 50)
+
         ; It is best to dispose() a Graphics object when done with it.
-        (.dispose graphics) 
+        (.dispose graphics)
 
         ; Shows the contents of the backbuffer on the screen.
         (.show buffer)))
@@ -44,7 +50,11 @@
         (.addKeyListener frame (proxy [KeyListener] []
             (keyPressed [e]
                 ; Exits when 'q' is pressed
-                (if (= (.getKeyChar e) \q) (System/exit 0) ))
+                (if (= (.getKeyChar e) \q) (System/exit 0) )
+
+                ; Pressing 'a' or 'z' updates the racket position
+                (if (= (.getKeyChar e) \a) (swap! racket-pos - 5) )
+                (if (= (.getKeyChar e) \z) (swap! racket-pos + 5) ))
             (keyReleased [e])
             (keyTyped [e])))
 
