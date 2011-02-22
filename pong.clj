@@ -13,10 +13,16 @@
 (def width 400)
 (def height 400)
 
+(def new-ball {:x 200 :y 200 :sx -0.001 :sy 1})
+
 ; Defines a atom to store the racket position
 (def racket-pos (atom (/ height 2)))
 
-(defn drawn [frame time]
+(defn update-ball [ball time]
+    (merge ball {:x (+ 200 (* (Math/sin (/ time 1000)) 100))
+                 :y (+ 200 (* (Math/sin (/ time 500)) 100))}))
+
+(defn drawn [frame time ball]
     (let [buffer (.getBufferStrategy frame)
           graphics (.getDrawGraphics buffer)]
 
@@ -26,7 +32,7 @@
 
         ; Draw a ball at time/50
         (.setColor graphics Color/WHITE)
-        (.drawOval graphics 200 (/ time 50) 10 10)
+        (.drawOval graphics (ball :x) (ball :y) 10 10)
 
         ; Draw the racket
         (.fillRect graphics 5 (- @racket-pos 25) 10 50)
@@ -62,10 +68,10 @@
 
         (.show frame)
 
-        (loop [time 0]
-            ;(println time)
-            (drawn frame time)
+        (loop [time 0 ball new-ball]
+            (println ball)
+            (drawn frame time ball)
             (Thread/sleep 50)
-            (recur (- (System/currentTimeMillis) start-time)))))
+            (recur (- (System/currentTimeMillis) start-time) (update-ball ball time)))))
 
 (main)
