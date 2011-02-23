@@ -15,7 +15,7 @@
 (def width (/ (.getWidth screen-size) 2))
 (def height (/ (.getHeight screen-size) 2))
 
-(def racquet-height 50)
+(def racquet-height (/ width 10))
 (def racquet-middle-height (/ racquet-height 2))
 (def racquet-width 10)
 
