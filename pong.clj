@@ -75,7 +75,6 @@
         (loop [time 0 ball new-ball]
             (println ball)
             (drawn frame time ball)
-            (Thread/sleep 50)
             (recur (- (System/currentTimeMillis) start-time) (update-ball ball time)))))
 
 (main)
