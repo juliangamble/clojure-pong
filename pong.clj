@@ -16,6 +16,7 @@
 (def height (/ (.getHeight screen-size) 2))
 
 (def racquet-height 50)
+(def middle-racquet-height (/ racquet-height 2))
 
 (def new-ball {:x 200 :y 200 :sx -0.001 :sy 1})
 
@@ -39,7 +40,7 @@
         (.drawOval graphics (ball :x) (ball :y) 10 10)
 
         ; Draw the racket
-        (.fillRect graphics 5 (- @racket-pos 25) 10 racquet-height)
+        (.fillRect graphics 5 (- @racket-pos middle-racquet-height) 10 racquet-height)
 
         ; It is best to dispose() a Graphics object when done with it.
         (.dispose graphics)
