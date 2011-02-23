@@ -71,6 +71,9 @@
             (keyReleased [e])
             (keyTyped [e])))
 
+        ; Makes sure everything inside the frame fits
+        (.validate frame)
+
         (.show frame)
 
         (loop [time 0 ball new-ball]
