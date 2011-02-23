@@ -64,7 +64,7 @@
                 (if (= (.getKeyChar e) \q) (System/exit 0) )
 
                 ; Pressing 'a' or 'z' updates the racket position
-                (if (and (< @racket-pos 375) (= (.getKeyChar e) \z))
+                (if (and (< @racket-pos (- height middle-racquet-height)) (= (.getKeyChar e) \z))
                     (swap! racket-pos + 5))
                 (if (and (> @racket-pos 25) (= (.getKeyChar e) \a))
                     (swap! racket-pos - 5)))
