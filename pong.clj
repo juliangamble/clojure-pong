@@ -69,11 +69,18 @@
                 ; Exits when 'q' is pressed
                 (if (= (.getKeyChar e) \q) (System/exit 0) )
 
-                ; Pressing 'a' or 'z' updates the racket position
+                ; Pressing 'a' or 'z' updates the left racket position
                 (if (and (< @racquet-left-position (- height racquet-middle-height)) (= (.getKeyChar e) \z))
                     (swap! racquet-left-position + 5))
                 (if (and (> @racquet-left-position 25) (= (.getKeyChar e) \a))
-                    (swap! racquet-left-position - 5)))
+                    (swap! racquet-left-position - 5))
+
+                ; Pressing 'j' or 'm' updates the right racket position
+                (if (and (< @racquet-right-position (- height racquet-middle-height)) (= (.getKeyChar e) \m))
+                    (swap! racquet-right-position + 5))
+                (if (and (> @racquet-right-position 25) (= (.getKeyChar e) \j))
+                    (swap! racquet-right-position - 5)))
+
             (keyReleased [e])
             (keyTyped [e])))
 
