@@ -16,12 +16,12 @@
 (def height (/ (.getHeight screen-size) 2))
 
 (def racquet-height 50)
-(def middle-racquet-height (/ racquet-height 2))
+(def racquet-middle-height (/ racquet-height 2))
 
 (def new-ball {:x 200 :y 200 :sx -0.001 :sy 1})
 
 ; Defines a atom to store the left racket position
-(def left-racket-position (atom (/ height 2)))
+(def racquet-left-position (atom (/ height 2)))
 
 (defn update-ball [ball time]
     (merge ball {:x (+ 200 (* (Math/sin (/ time 1000)) 100))
@@ -40,7 +40,7 @@
         (.drawOval graphics (ball :x) (ball :y) 10 10)
 
         ; Draw the racket
-        (.fillRect graphics 5 (- @left-racket-position middle-racquet-height) 10 racquet-height)
+        (.fillRect graphics 5 (- @racquet-left-position racquet-middle-height) 10 racquet-height)
 
         ; It is best to dispose() a Graphics object when done with it.
         (.dispose graphics)
@@ -65,10 +65,10 @@
                 (if (= (.getKeyChar e) \q) (System/exit 0) )
 
                 ; Pressing 'a' or 'z' updates the racket position
-                (if (and (< @left-racket-position (- height middle-racquet-height)) (= (.getKeyChar e) \z))
-                    (swap! left-racket-position + 5))
-                (if (and (> @left-racket-position 25) (= (.getKeyChar e) \a))
-                    (swap! left-racket-position - 5)))
+                (if (and (< @racquet-left-position (- height racquet-middle-height)) (= (.getKeyChar e) \z))
+                    (swap! racquet-left-position + 5))
+                (if (and (> @racquet-left-position 25) (= (.getKeyChar e) \a))
+                    (swap! racquet-left-position - 5)))
             (keyReleased [e])
             (keyTyped [e])))
 
