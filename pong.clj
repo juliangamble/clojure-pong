@@ -6,12 +6,15 @@
 ; http://jng.imagine27.com/articles/2009-09-12-122605_pong_in_clojure.html
 
 (import (javax.swing JFrame)
-        (java.awt Color Dimension)
+        (java.awt Color Dimension Toolkit)
         (java.awt.event KeyListener))
 
+
+(def screen-size (.. Toolkit getDefaultToolkit getScreenSize))
+
 ; The window size
-(def width 400)
-(def height 400)
+(def width (/ (.getWidth screen-size) 2))
+(def height (/ (.getHeight screen-size) 2))
 
 (def new-ball {:x 200 :y 200 :sx -0.001 :sy 1})
 
