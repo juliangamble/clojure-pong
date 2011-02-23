@@ -53,6 +53,7 @@
           start-time (System/currentTimeMillis)]
         (.setDefaultCloseOperation frame JFrame/EXIT_ON_CLOSE)
         (.setSize frame (new Dimension width height))
+        (.setLocationRelativeTo frame nil)
         (.setUndecorated frame true)
         (.setResizable frame false)
         (.setVisible frame true)
