@@ -9,12 +9,13 @@
         (java.awt Color Dimension Toolkit)
         (java.awt.event KeyListener))
 
-
 (def screen-size (.. Toolkit getDefaultToolkit getScreenSize))
 
 ; The window size
 (def width (/ (.getWidth screen-size) 2))
 (def height (/ (.getHeight screen-size) 2))
+
+(def racquet-height 50)
 
 (def new-ball {:x 200 :y 200 :sx -0.001 :sy 1})
 
@@ -38,7 +39,7 @@
         (.drawOval graphics (ball :x) (ball :y) 10 10)
 
         ; Draw the racket
-        (.fillRect graphics 5 (- @racket-pos 25) 10 50)
+        (.fillRect graphics 5 (- @racket-pos 25) 10 racquet-height)
 
         ; It is best to dispose() a Graphics object when done with it.
         (.dispose graphics)
