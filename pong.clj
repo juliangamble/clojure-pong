@@ -26,6 +26,8 @@
 
 (def ball-size 50)
 
+(def lane-size 5)
+
 ;; Defines a atom to store the rackets positions
 (def racquet-left-position (atom (/ window-height 2)))
 (def racquet-right-position (atom (/ window-height 2)))
@@ -61,7 +63,11 @@
         (.setColor graphics Color/WHITE)
         (.drawOval graphics (ball :x) (ball :y) ball-size ball-size)
 
-        (.fillRect graphics 0 (- window-height court-height 5) court-width 5)
+        ;; Court top lane
+        (.fillRect graphics 0 (- window-height court-height lane-size) court-width lane-size)
+
+        ;; Court division lane
+        (.fillRect graphics (- (/ court-width 2) lane-size) bleacher-height lane-size court-height)
 
         ;; Draw the left racket
         (.fillRect graphics 5 (- @racquet-left-position racquet-middle-height) racquet-width racquet-height)
