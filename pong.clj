@@ -13,6 +13,10 @@
 (def window-width 600)
 (def window-height window-width)
 
+; The court size: 23.78m by 8.23m, which gives a proportion of 2,88
+(def court-width window-width)
+(def court-height (- window-width (/ window-width 2.88)))
+
 (def racquet-height (/ window-height 10))
 (def racquet-middle-height (/ racquet-height 2))
 (def racquet-width 10)
@@ -38,6 +42,8 @@
         ; Draw a ball at time/50
         (.setColor graphics Color/WHITE)
         (.drawOval graphics (ball :x) (ball :y) 10 10)
+
+        (.fillRect graphics 0 (- window-height court-height 5) court-width 5)
 
         ; Draw the left racket
         (.fillRect graphics 5 (- @racquet-left-position racquet-middle-height) racquet-width racquet-height)
