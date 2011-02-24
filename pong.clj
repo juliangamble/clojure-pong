@@ -24,24 +24,26 @@
 
 (def new-ball {:x 200 :y 200 :sx 0.1 :sy 0})
 
+(def ball-size 50)
+
 ;; Defines a atom to store the rackets positions
 (def racquet-left-position (atom (/ window-height 2)))
 (def racquet-right-position (atom (/ window-height 2)))
 
 (defn colision-y? [ball]
-    (> (ball :y) (- window-width 10)))
+    (> (ball :y) (- window-width ball-size)))
 
 (defn colision-xr? [ball]
-    (> (ball :x) (- window-height 10)))
+    (> (ball :x) (- window-height ball-size)))
 
 (defn colision-xl? [ball]
     (< (ball :x) 0))
 
 (defn update-ball [ball step]
     (cond
-        (colision-y? ball) (merge ball {:y (- window-width 10) :sy (* -1 (ball :sy))})
-        (colision-xr? ball) (merge ball {:x (- window-height 10) :sx (* -1 (ball :sx))})
-        (colision-xl? ball) (merge ball {:x 10 :sx (* -1 (ball :sx))})
+        (colision-y? ball) (merge ball {:y (- window-width ball-size) :sy (* -1 (ball :sy))})
+        (colision-xr? ball) (merge ball {:x (- window-height ball-size) :sx (* -1 (ball :sx))})
+        (colision-xl? ball) (merge ball {:x ball-size :sx (* -1 (ball :sx))})
         ;; Apply the physics, I added +1 in the step in order to avoid division by zero
         :else (merge ball {:x (+ (ball :x) (* (+ step 1) (ball :sx)))
                            :y (+ (ball :y) (* (+ step 1) (ball :sy)))
@@ -57,7 +59,7 @@
 
         ;; Draw the ball
         (.setColor graphics Color/WHITE)
-        (.drawOval graphics (ball :x) (ball :y) 10 10)
+        (.drawOval graphics (ball :x) (ball :y) ball-size ball-size)
 
         (.fillRect graphics 0 (- window-height court-height 5) court-width 5)
 
