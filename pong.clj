@@ -22,15 +22,17 @@
 (def racquet-middle-height (/ racquet-height 2))
 (def racquet-width 10)
 
-(def new-ball {:x 200 :y 200 :sx -0.001 :sy 1})
+(def new-ball {:x 200 :y 200 :sx -0.001 :sy 0.01})
 
 ; Defines a atom to store the rackets positions
 (def racquet-left-position (atom (/ window-height 2)))
 (def racquet-right-position (atom (/ window-height 2)))
 
-(defn update-ball [ball time]
-    (merge ball {:x (+ 200 (* (Math/sin (/ time 1000)) 100))
-                 :y (+ 200 (* (Math/sin (/ time 500)) 100))}))
+(defn update-ball [ball step]
+    (merge ball {:x (ball :x)
+                  ; Makes the ball fall, I added +1 in the step in order to avoid division by zero
+                 :y (+ (ball :y) (* (+ step 1) (ball :sy)))
+                 :sy (* 1.01 (ball :sy))})) ; Some aceleration :P
 
 (defn drawn [frame time ball]
     (let [buffer (.getBufferStrategy frame)
@@ -94,9 +96,14 @@
 
         (.show frame)
 
-        (loop [time 0 ball new-ball]
-            (println ball)
-            (drawn frame time ball)
-            (recur (- (System/currentTimeMillis) start-time) (update-ball ball time)))))
+        (loop [time start-time old-time start-time ball new-ball]
+            (let [step (- time old-time)]
+                (drawn frame time ball)
+
+                ; Since Clojure is so fast, a sleep is "required" in order to avoid 0ms time steps
+                ; We need to implement a better game loop (Threads?)
+                (Thread/sleep 20)
+
+                (recur (System/currentTimeMillis) time (update-ball ball step))))))
 
 (main)
