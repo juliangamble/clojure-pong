@@ -31,7 +31,9 @@
 (defn update-ball [ball step]
     (merge ball {:x (ball :x)
                   ; Makes the ball fall, I added +1 in the step in order to avoid division by zero
-                 :y (+ (ball :y) (* (+ step 1) (ball :sy)))
+                 :y (if (< (ball :y) (- window-width 10))
+                        (+ (ball :y) (* (+ step 1) (ball :sy)))
+                        (ball :y))
                  :sy (* 1.01 (ball :sy))})) ; Some aceleration :P
 
 (defn drawn [frame ball]
