@@ -15,7 +15,8 @@
 
 ; The court size: 23.78m by 8.23m, which gives a proportion of 2,88
 (def court-width window-width)
-(def court-height (- window-width (/ window-width 2.88)))
+(def bleacher-height (- window-width (/ window-width 2.88)))
+(def court-height bleacher-height)
 
 (def racquet-height (/ window-height 10))
 (def racquet-middle-height (/ racquet-height 2))
