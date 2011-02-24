@@ -21,7 +21,7 @@
 (def racquet-height (/ court-height 5))
 (def racquet-middle-height (/ racquet-height 2))
 (def racquet-width 10)
-(def racquet-distance 10)
+(def racquet-distance 10) ;; How far from the side court walls
 
 (def new-ball {:x 200 :y 200 :sx 0.1 :sy 0})
 
