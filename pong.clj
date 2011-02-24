@@ -34,7 +34,7 @@
                  :y (+ (ball :y) (* (+ step 1) (ball :sy)))
                  :sy (* 1.01 (ball :sy))})) ; Some aceleration :P
 
-(defn drawn [frame time ball]
+(defn drawn [frame ball]
     (let [buffer (.getBufferStrategy frame)
           graphics (.getDrawGraphics buffer)]
 
@@ -42,7 +42,7 @@
         (.setColor graphics Color/BLACK)
         (.fillRect graphics 0 0 window-width window-height)
 
-        ; Draw a ball at time/50
+        ; Draw the ball
         (.setColor graphics Color/WHITE)
         (.drawOval graphics (ball :x) (ball :y) 10 10)
 
@@ -98,7 +98,7 @@
 
         (loop [time start-time old-time start-time ball new-ball]
             (let [step (- time old-time)]
-                (drawn frame time ball)
+                (drawn frame ball)
 
                 ; Since Clojure is so fast, a sleep is "required" in order to avoid 0ms time steps
                 ; We need to implement a better game loop (Threads?)
