@@ -21,6 +21,7 @@
 (def racquet-height (/ court-height 5))
 (def racquet-middle-height (/ racquet-height 2))
 (def racquet-width 10)
+(def racquet-distance 10)
 
 (def new-ball {:x 200 :y 200 :sx 0.1 :sy 0})
 
@@ -70,10 +71,10 @@
         (.fillRect graphics (- (/ court-width 2) lane-size) bleacher-height lane-size court-height)
 
         ;; Draw the left racket
-        (.fillRect graphics 5 (- @racquet-left-position racquet-middle-height) racquet-width racquet-height)
+        (.fillRect graphics racquet-distance (- @racquet-left-position racquet-middle-height) racquet-width racquet-height)
 
         ;; Draw the right racket
-        (.fillRect graphics (- window-width (+ racquet-width 5)) (- @racquet-right-position racquet-middle-height) racquet-width racquet-height)
+        (.fillRect graphics (- window-width (+ racquet-width racquet-distance)) (- @racquet-right-position racquet-middle-height) racquet-width racquet-height)
 
         ;; It is best to dispose() a Graphics object when done with it.
         (.dispose graphics)
