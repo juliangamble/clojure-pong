@@ -63,10 +63,10 @@
         (.setColor graphics Color/WHITE)
         (.drawOval graphics (ball :x) (ball :y) ball-size ball-size)
 
-        ;; Court top lane
+        ;; Draw the court top lane
         (.fillRect graphics 0 (- window-height court-height lane-size) court-width lane-size)
 
-        ;; Court division lane
+        ;; Draw the court division lane
         (.fillRect graphics (- (/ court-width 2) lane-size) bleacher-height lane-size court-height)
 
         ;; Draw the left racket
