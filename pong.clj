@@ -9,21 +9,19 @@
         (java.awt Color Dimension Toolkit)
         (java.awt.event KeyListener))
 
-(def screen-size (.. Toolkit getDefaultToolkit getScreenSize))
-
 ; The window size
-(def width (/ (.getWidth screen-size) 2))
-(def height (/ (.getHeight screen-size) 2))
+(def window-width 600)
+(def window-height window-width)
 
-(def racquet-height (/ height 10))
+(def racquet-height (/ window-height 10))
 (def racquet-middle-height (/ racquet-height 2))
 (def racquet-width 10)
 
 (def new-ball {:x 200 :y 200 :sx -0.001 :sy 1})
 
 ; Defines a atom to store the rackets positions
-(def racquet-left-position (atom (/ height 2)))
-(def racquet-right-position (atom (/ height 2)))
+(def racquet-left-position (atom (/ window-height 2)))
+(def racquet-right-position (atom (/ window-height 2)))
 
 (defn update-ball [ball time]
     (merge ball {:x (+ 200 (* (Math/sin (/ time 1000)) 100))
@@ -35,7 +33,7 @@
 
         ; Clears the screen
         (.setColor graphics Color/BLACK)
-        (.fillRect graphics 0 0 width height)
+        (.fillRect graphics 0 0 window-width window-height)
 
         ; Draw a ball at time/50
         (.setColor graphics Color/WHITE)
@@ -45,7 +43,7 @@
         (.fillRect graphics 5 (- @racquet-left-position racquet-middle-height) racquet-width racquet-height)
 
         ; Draw the right racket
-        (.fillRect graphics (- width (+ racquet-width 5)) (- @racquet-right-position racquet-middle-height) racquet-width racquet-height)
+        (.fillRect graphics (- window-width (+ racquet-width 5)) (- @racquet-right-position racquet-middle-height) racquet-width racquet-height)
 
         ; It is best to dispose() a Graphics object when done with it.
         (.dispose graphics)
@@ -57,7 +55,7 @@
     (let [frame (new JFrame "Clojure Pong")
           start-time (System/currentTimeMillis)]
         (.setDefaultCloseOperation frame JFrame/EXIT_ON_CLOSE)
-        (.setSize frame (new Dimension width height))
+        (.setSize frame (new Dimension window-width window-height))
         (.setLocationRelativeTo frame nil)
         (.setUndecorated frame true)
         (.setResizable frame false)
@@ -70,13 +68,13 @@
                 (if (= (.getKeyChar e) \q) (System/exit 0) )
 
                 ; Pressing 'a' or 'z' updates the left racket position
-                (if (and (< @racquet-left-position (- height racquet-middle-height)) (= (.getKeyChar e) \z))
+                (if (and (< @racquet-left-position (- window-height racquet-middle-height)) (= (.getKeyChar e) \z))
                     (swap! racquet-left-position + 5))
                 (if (and (> @racquet-left-position 25) (= (.getKeyChar e) \a))
                     (swap! racquet-left-position - 5))
 
                 ; Pressing 'j' or 'm' updates the right racket position
-                (if (and (< @racquet-right-position (- height racquet-middle-height)) (= (.getKeyChar e) \m))
+                (if (and (< @racquet-right-position (- window-height racquet-middle-height)) (= (.getKeyChar e) \m))
                     (swap! racquet-right-position + 5))
                 (if (and (> @racquet-right-position 25) (= (.getKeyChar e) \j))
                     (swap! racquet-right-position - 5)))
