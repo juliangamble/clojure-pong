@@ -18,7 +18,7 @@
 (def court-height (- window-width (/ window-width 2.88)))
 (def bleacher-height (- window-height court-height))
 
-(def racquet-height (/ window-height 10))
+(def racquet-height (/ court-height 5))
 (def racquet-middle-height (/ racquet-height 2))
 (def racquet-width 10)
 
