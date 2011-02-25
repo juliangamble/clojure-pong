@@ -65,7 +65,7 @@
         (.drawOval graphics (ball :x) (ball :y) ball-size ball-size)
 
         ; Draw the court top lane
-        (.fillRect graphics 0 (- window-height court-height lane-size) court-width lane-size)
+        (.fillRect graphics 0 (- bleacher-height lane-size) court-width lane-size)
 
         ; Draw the court division lane
         (.fillRect graphics (- (/ court-width 2) lane-size) bleacher-height lane-size court-height)
