@@ -30,8 +30,8 @@
 (def lane-size 5)
 
 ; Defines a atom to store the rackets positions
-(def racquet-left-position (atom (/ window-height 2)))
-(def racquet-right-position (atom (/ window-height 2)))
+(def racquet-left-position (atom (+ bleacher-height (/ court-height 2))))
+(def racquet-right-position (atom (+ bleacher-height (/ court-height 2))))
 
 (defn colision-y? [ball]
     (> (ball :y) (- window-width ball-size)))
