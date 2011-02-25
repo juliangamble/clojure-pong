@@ -10,13 +10,14 @@
         (java.awt.event KeyListener))
 
 ; The window size
-(def window-width 600)
-(def window-height window-width)
+(def window-width 800)
 
 ; A tennis court size: 23.78m by 8.23m, which gives a proportion of 2,88
 (def court-width window-width)
-(def court-height (- window-width (/ window-width 2.88)))
-(def bleacher-height (- window-height court-height))
+(def bleacher-height 200)
+(def court-height (- court-width (/ court-width 2.88)))
+
+(def window-height (+ court-height bleacher-height))
 
 (def racquet-height (/ court-height 5))
 (def racquet-middle-height (/ racquet-height 2))
@@ -122,7 +123,7 @@
             (let [step (- time old-time)]
                 (drawn frame ball)
 
-                (println ball)
+                ; (println ball)
 
                 ; Since Clojure is so fast, a sleep is "required" in order to avoid 0ms time steps
                 ; We need to implement a better game loop (Threads?)
