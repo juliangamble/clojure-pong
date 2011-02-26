@@ -42,19 +42,19 @@
 (def right-player-score (atom 0))
 
 
-(defn colision-yt?
+(defn colision-top?
   [ball]
   (< (ball :y) (+ bleacher-height lane-size)))
 
-(defn colision-yb?
+(defn colision-bottom?
   [ball]
   (> (ball :y) (- window-height ball-size)))
 
-(defn colision-xr?
+(defn colision-right?
   [ball]
   (> (ball :x) (- window-width ball-size)))
 
-(defn colision-xl?
+(defn colision-left?
   [ball]
   (< (ball :x) 0))
 
@@ -89,13 +89,14 @@
     ; This requires some serious DRY
     (colision-racquet-left? ball racquet-left) (merge ball {:x (+ racquet-distance racquet-width) :sx (* -1 (ball :sx))})
     (colision-racquet-right? ball racquet-right) (merge ball {:x (- window-width ball-size racquet-width racquet-distance) :sx (* -1 (ball :sx))})
-    (colision-yt? ball) (merge ball {:y (+ bleacher-height lane-size) :sy (* -1 (ball :sy))})
-    (colision-yb? ball) (merge ball {:y (- window-height ball-size) :sy (* -1 (ball :sy))})
-    (colision-xr? ball) (collided-xr ball)
-    (colision-xl? ball) (collided-xl ball)
+    (colision-top? ball) (merge ball {:y (+ bleacher-height lane-size) :sy (* -1 (ball :sy))})
+    (colision-bottom? ball) (merge ball {:y (- window-height ball-size) :sy (* -1 (ball :sy))})
+    (colision-right? ball) (collided-xr ball)
+    (colision-left? ball) (collided-xl ball)
     ; Apply the physics
     :else (merge ball {:x (+ (ball :x) (* step (ball :sx)))
                        :y (+ (ball :y) (* step (ball :sy)))
+                       :sx (+ (ball :sx) (* 0.000098 step))
                        :sy (+ (ball :sy) (* 0.000098 step))})))
 
 (defn update-racquet
