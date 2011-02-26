@@ -111,8 +111,9 @@
       (.drawString (str @left-player-score) 50 score-height)
       (.drawString (str @right-player-score) 500 score-height)
 
-    ; Draw FPS counter
-    (.drawString graphics (str fps) 750 10)
+      ; Draw FPS counter
+      (.setFont (new Font "Serif" (. Font PLAIN) 20))
+      (.drawString (str fps) 770 20)
 
       ; It is best to dispose() a Graphics object when done with it.
       (.dispose))
