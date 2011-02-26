@@ -174,26 +174,27 @@
   []
   (let [frame (new JFrame "Clojure Pong")
         start-time (System/currentTimeMillis)]
-    (.setDefaultCloseOperation frame JFrame/EXIT_ON_CLOSE)
-    (.setSize frame (new Dimension window-width window-height))
-    (.setLocationRelativeTo frame nil)
-    (.setUndecorated frame true)
-    (.setResizable frame false)
-    (.setVisible frame true)
-    (.createBufferStrategy frame 2)
+    (doto frame
+      (.setDefaultCloseOperation JFrame/EXIT_ON_CLOSE)
+      (.setSize (new Dimension window-width window-height))
+      (.setLocationRelativeTo nil)
+      (.setUndecorated true)
+      (.setResizable false)
+      (.setVisible true)
+      (.createBufferStrategy 2)
 
-    (.addKeyListener frame
-      (proxy [KeyListener] []
-        (keyPressed [e]
-          (handle-keypress (.getKeyChar e)))
-        (keyReleased [e]
-          (handle-keyrelease (.getKeyChar e)))
-        (keyTyped [e])))
+      (.addKeyListener
+        (proxy [KeyListener] []
+          (keyPressed [e]
+            (handle-keypress (.getKeyChar e)))
+          (keyReleased [e]
+            (handle-keyrelease (.getKeyChar e)))
+          (keyTyped [e])))
 
-    ; Makes sure everything inside the frame fits
-    (.validate frame)
+      ; Makes sure everything inside the frame fits
+      (.validate)
 
-    (.show frame)
+      (.show))
 
     (loop [time start-time
            old-time start-time
