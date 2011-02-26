@@ -24,7 +24,7 @@
 (def racquet-width 10)
 (def racquet-distance 10) ; How far from the side court walls
 
-(def new-ball {:x 200 :y 200 :sx 0.1 :sy 0})
+(def new-ball {:x 100 :y 200 :sx 0.1 :sy 0})
 
 (def ball-size 50)
 
@@ -36,11 +36,11 @@
 
 (defn colision-y?
   [ball]
-  (> (ball :y) (- window-width ball-size)))
+  (> (ball :y) (- window-height ball-size)))
 
 (defn colision-xr?
   [ball]
-  (> (ball :x) (- window-height ball-size)))
+  (> (ball :x) (- window-width ball-size)))
 
 (defn colision-xl?
   [ball]
@@ -48,20 +48,21 @@
 
 (defn update-ball
   [ball step]
+  ; The cond form is usually a bad ideia. There should a better way to do this.
   (cond
-    (colision-y? ball) (merge ball {:y (- window-width ball-size) :sy (* -1 (ball :sy))})
-    (colision-xr? ball) (merge ball {:x (- window-height ball-size) :sx (* -1 (ball :sx))})
-    (colision-xl? ball) (merge ball {:x ball-size :sx (* -1 (ball :sx))})
+    (colision-y? ball) (merge ball {:y (- window-height ball-size) :sy (* -1 (ball :sy))})
+    (colision-xr? ball) (merge ball {:x (- window-width ball-size) :sx (* -1 (ball :sx))})
+    (colision-xl? ball) (merge ball {:x 0 :sx (* -1 (ball :sx))})
     ; Apply the physics, I added +1 in the step in order to avoid division by zero
     :else (merge ball {:x (+ (ball :x) (* (+ step 1) (ball :sx)))
                        :y (+ (ball :y) (* (+ step 1) (ball :sy)))
                        :sy (+ (ball :sy) (* 0.000098 step))})))
 
-(defn drawn 
+(defn drawn
   [frame ball]
   (let [buffer (.getBufferStrategy frame)
         graphics (.getDrawGraphics buffer)]
-    
+
     ; Clears the screen
     (.setColor graphics Color/BLACK)
     (.fillRect graphics 0 0 window-width window-height)
@@ -99,7 +100,7 @@
     (.setResizable frame false)
     (.setVisible frame true)
     (.createBufferStrategy frame 2)
-    
+
     (.addKeyListener frame
       (proxy [KeyListener] []
         (keyPressed [e]
@@ -119,7 +120,7 @@
             (swap! racquet-right-position - 5)))
         (keyReleased [e])
         (keyTyped [e])))
-    
+
     ; Makes sure everything inside the frame fits
     (.validate frame)
 
