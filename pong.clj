@@ -42,6 +42,7 @@
 
 ; Game
 (def new-game {:ball {:x 100 :y (+ bleacher-height lane-size 1) :sx 0.2 :sy 0.2}
+               :speed 0.5
                :player-left-score 0
                :player-right-score 0
                :racquet-left-pos 400
@@ -88,6 +89,24 @@
                                     :sx (* -1 (ball :sx))})
                  :player-left-score (inc (game :player-left-score))})))
 
+(defn collided-racquet-right
+  [game]
+  (let [ball (game :ball)
+        racquet (game :racquet-right-pos)
+        hit (/ (- (ball :y) racquet) racquet-middle-height)]
+    (merge ball {:x (- window-width ball-size racquet-width racquet-distance)
+                 :sx (* -1 (Math/cos hit) (game :speed))
+                 :sy (* (Math/sin hit) (game :speed))})))
+
+(defn collided-racquet-left
+  [game]
+  (let [ball (game :ball)
+        racquet (game :racquet-left-pos)
+        hit (/ (- (ball :y) racquet) racquet-middle-height)]
+    (merge ball {:x (+ racquet-distance racquet-width)
+                 :sx (* (Math/cos hit) (game :speed))
+                 :sy (* (Math/sin hit) (game :speed))})))
+
 (defn collided-left
   [game]
   (let [ball (game :ball)]
@@ -104,8 +123,8 @@
     ; The cond form is usually a bad ideia. There should a better way to do this.
     (cond
       ; This requires some serious DRY
-      (colision-racquet-left? ball racquet-left) (merge ball {:x (+ racquet-distance racquet-width) :sx (* -1 (ball :sx))})
-      (colision-racquet-right? ball racquet-right) (merge ball {:x (- window-width ball-size racquet-width racquet-distance) :sx (* -1 (ball :sx))})
+      (colision-racquet-left? ball racquet-left) (collided-racquet-left game)
+      (colision-racquet-right? ball racquet-right) (collided-racquet-right game)
       (colision-top? ball) (merge ball {:y (+ bleacher-height lane-size) :sy (* -1 (ball :sy))})
       (colision-bottom? ball) (merge ball {:y (- window-height ball-size) :sy (* -1 (ball :sy))})
       ; Apply the physics
