@@ -98,12 +98,11 @@
     ; Draw the court division lane
     (.fillRect graphics (- (/ court-width 2) lane-size) bleacher-height lane-size court-height)
 
-    ; Draw the left racket
+    ; Draw both racquets
     (.fillRect graphics racquet-distance (- racquet-left-position racquet-middle-height) racquet-width racquet-height)
-
-    ; Draw the right racket
     (.fillRect graphics (- window-width (+ racquet-width racquet-distance)) (- racquet-right-position racquet-middle-height) racquet-width racquet-height)
 
+    ; Draw both scores     
     (.drawString graphics (str @left-player-score) 50 150)
     (.drawString graphics (str @right-player-score) 500 150)
 
