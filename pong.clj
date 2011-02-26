@@ -5,6 +5,10 @@
 
 ; The pong in Clojure
 ;
+; by Cesar Canassa and Julio Nobrega
+;
+; 2011-02-26
+;
 ; References:
 ; http://gpwiki.org/index.php/Java:Tutorials:Double_Buffering
 ; http://zetcode.com/tutorials/javagamestutorial/
