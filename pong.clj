@@ -172,10 +172,6 @@
       (let [step (- time old-time)]
         (drawn frame ball racket-left racket-right fps)
 
-        ; Since Clojure is so fast, a sleep is "required" in order to avoid 0ms time steps
-        ; We need to implement a better game loop (Threads?)
-        (Thread/sleep 20)
-
         (recur (System/currentTimeMillis)
                time
                (update-ball ball step)
