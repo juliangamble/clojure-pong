@@ -220,8 +220,6 @@
       (let [step (- time old-time)]
         (drawn frame ball racquet-left racquet-right fps)
 
-        (println ball)
-
         (recur (System/currentTimeMillis)
                time
                (update-ball ball step racquet-left racquet-right)
