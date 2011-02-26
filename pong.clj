@@ -39,12 +39,17 @@
 (def racquet-right-state (atom {:up false :down false}))
 
 (def ball-size 3)
-(def new-ball {:x 100 :y (+ bleacher-height lane-size 1) :sx 0.1 :sy 0.1})
 
 ; The player score
 (def left-player-score (atom 0))
 (def right-player-score (atom 0))
 
+; Game
+(def new-game {:ball {:x 100 :y (+ bleacher-height lane-size 1) :sx 0.1 :sy 0.1}
+               :player-left-score 0
+               :player-right-score 0
+               :racquet-left-pos 400
+               :racquet-right-pos 400})
 
 ;;;;;;;;;;;;;;;;; Colision checking ;;;;;;;;;;;;;;;;;
 (defn colision-top?
@@ -92,19 +97,22 @@
 
 ;;;;;;;;;;;;;;;;; Object updates ;;;;;;;;;;;;;;;;;
 (defn update-ball
-  [ball step racquet-left racquet-right]
-  ; The cond form is usually a bad ideia. There should a better way to do this.
-  (cond
-    ; This requires some serious DRY
-    (colision-racquet-left? ball racquet-left) (merge ball {:x (+ racquet-distance racquet-width) :sx (* -1 (ball :sx))})
-    (colision-racquet-right? ball racquet-right) (merge ball {:x (- window-width ball-size racquet-width racquet-distance) :sx (* -1 (ball :sx))})
-    (colision-top? ball) (merge ball {:y (+ bleacher-height lane-size) :sy (* -1 (ball :sy))})
-    (colision-bottom? ball) (merge ball {:y (- window-height ball-size) :sy (* -1 (ball :sy))})
-    (colision-right? ball) (collided-right ball)
-    (colision-left? ball) (collided-left ball)
-    ; Apply the physics
-    :else (merge ball {:x (+ (ball :x) (* step (ball :sx)))
-                       :y (+ (ball :y) (* step (ball :sy)))})))
+  [game step]
+  (let [ball (game :ball)
+        racquet-left (game :racquet-left-pos)
+        racquet-right (game :racquet-left-pos)]
+    ; The cond form is usually a bad ideia. There should a better way to do this.
+    (cond
+      ; This requires some serious DRY
+      (colision-racquet-left? ball racquet-left) (merge ball {:x (+ racquet-distance racquet-width) :sx (* -1 (ball :sx))})
+      (colision-racquet-right? ball racquet-right) (merge ball {:x (- window-width ball-size racquet-width racquet-distance) :sx (* -1 (ball :sx))})
+      (colision-top? ball) (merge ball {:y (+ bleacher-height lane-size) :sy (* -1 (ball :sy))})
+      (colision-bottom? ball) (merge ball {:y (- window-height ball-size) :sy (* -1 (ball :sy))})
+      (colision-right? ball) (collided-right ball)
+      (colision-left? ball) (collided-left ball)
+      ; Apply the physics
+      :else (merge ball {:x (+ (ball :x) (* step (ball :sx)))
+                         :y (+ (ball :y) (* step (ball :sy)))}))))
 
 (defn update-racquet
   [position state step]
@@ -120,11 +128,24 @@
         (= (state :down) true) (+ position (* step racquet-speed))
         :else position)))
 
+(defn update-game
+  [game step]
+  (let [ball (update-ball game step)
+        racquet-left (update-racquet (game :racquet-left-pos) @racquet-left-state step)
+        racquet-right (update-racquet (game :racquet-right-pos) @racquet-right-state step)]
+
+    (merge game {:ball ball
+                 :racquet-left-pos racquet-left
+                 :racquet-right-pos racquet-right})))
+
 ;;;;;;;;;;;;;;;;; Draw, Keypress, Main loop ;;;;;;;;;;;;;;;;;
 (defn drawn
-  [frame ball racquet-left-position racquet-right-position fps]
+  [frame game fps]
   (let [buffer (.getBufferStrategy frame)
-        graphics (.getDrawGraphics buffer)]
+        graphics (.getDrawGraphics buffer)
+        ball (game :ball)
+        racquet-left-position (game :racquet-left-pos)
+        racquet-right-position (game :racquet-right-pos)]
 
     (doto graphics
       ; Clears the screen
@@ -217,21 +238,18 @@
 
     (loop [time start-time
            old-time start-time
-           ball new-ball
-           racquet-left 400
-           racquet-right 400
+           game new-game
            fps 0
            frame-counter 0
            one-second 0]
       (let [step (- time old-time)
             new-fps? (>= one-second 1000)]
-        (drawn frame ball racquet-left racquet-right fps)
+
+        (drawn frame game fps)
 
         (recur (System/currentTimeMillis)
                time
-               (update-ball ball step racquet-left racquet-right)
-               (update-racquet racquet-left @racquet-left-state step)
-               (update-racquet racquet-right @racquet-right-state step)
+               (update-game game step)
                (if new-fps? frame-counter fps)
                (if new-fps? 0 (inc frame-counter))
                (if new-fps? 0 (+ one-second step)))))))
