@@ -146,24 +146,26 @@
 
 (defn handle-keypress
   [e]
-    ; Exits when 'q' is pressed
-    (if (= (.getKeyChar e) \q) (System/exit 0))
+    (cond
+      ; Exits when 'q' is pressed
+      (= (.getKeyChar e) \q) (System/exit 0)
 
-    ; Pressing 'a' or 'z' updates the left racquet state
-    (if (= (.getKeyChar e) \a) (swap! racquet-left-state merge @racquet-left-state {:up true}))
-    (if (= (.getKeyChar e) \z) (swap! racquet-left-state merge @racquet-left-state {:down true}))
+      ; Pressing 'a' or 'z' updates the left racquet state
+      (= (.getKeyChar e) \a) (swap! racquet-left-state merge @racquet-left-state {:up true})
+      (= (.getKeyChar e) \z) (swap! racquet-left-state merge @racquet-left-state {:down true})
 
-    ; Pressing 'j' or 'm' updates the right racquet state
-    (if (= (.getKeyChar e) \j) (swap! racquet-right-state merge @racquet-right-state {:up true}))
-    (if (= (.getKeyChar e) \m) (swap! racquet-right-state merge @racquet-right-state {:down true})))
+      ; Pressing 'j' or 'm' updates the right racquet state
+      (= (.getKeyChar e) \j) (swap! racquet-right-state merge @racquet-right-state {:up true})
+      (= (.getKeyChar e) \m) (swap! racquet-right-state merge @racquet-right-state {:down true})))
 
 (defn handle-keyrelease
   [e]
     ; Releasing the keys stops the racquet
-    (if (= (.getKeyChar e) \a) (swap! racquet-left-state merge @racquet-left-state {:up false}))
-    (if (= (.getKeyChar e) \z) (swap! racquet-left-state merge @racquet-left-state {:down false}))
-    (if (= (.getKeyChar e) \j) (swap! racquet-right-state merge @racquet-right-state {:up false}))
-    (if (= (.getKeyChar e) \m) (swap! racquet-right-state merge @racquet-right-state {:down false})))
+    (cond
+      (= (.getKeyChar e) \a) (swap! racquet-left-state merge @racquet-left-state {:up false})
+      (= (.getKeyChar e) \z) (swap! racquet-left-state merge @racquet-left-state {:down false})
+      (= (.getKeyChar e) \j) (swap! racquet-right-state merge @racquet-right-state {:up false})
+      (= (.getKeyChar e) \m) (swap! racquet-right-state merge @racquet-right-state {:down false})))
 
 (defn main
   []
