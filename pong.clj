@@ -175,7 +175,7 @@
 
       ; Draw the ball
       (.setColor Color/WHITE)
-      (.drawOval (ball :x) (ball :y) ball-size ball-size)
+      (.fillOval (ball :x) (ball :y) ball-size ball-size)
 
       ; Draw the court top lane
       (.fillRect 0 (- bleacher-height lane-size) court-width lane-size)
