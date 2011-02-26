@@ -85,31 +85,32 @@
   (let [buffer (.getBufferStrategy frame)
         graphics (.getDrawGraphics buffer)]
 
-    ; Clears the screen
-    (.setColor graphics Color/BLACK)
-    (.fillRect graphics 0 0 window-width window-height)
+    (doto graphics
+      ; Clears the screen
+      (.setColor Color/BLACK)
+      (.fillRect 0 0 window-width window-height)
 
-    ; Draw the ball
-    (.setColor graphics Color/WHITE)
-    (.drawOval graphics (ball :x) (ball :y) ball-size ball-size)
+      ; Draw the ball
+      (.setColor Color/WHITE)
+      (.drawOval (ball :x) (ball :y) ball-size ball-size)
 
-    ; Draw the court top lane
-    (.fillRect graphics 0 (- bleacher-height lane-size) court-width lane-size)
+      ; Draw the court top lane
+      (.fillRect 0 (- bleacher-height lane-size) court-width lane-size)
 
-    ; Draw the court division lane
-    (.fillRect graphics (- (/ court-width 2) lane-size) bleacher-height lane-size court-height)
+      ; Draw the court division lane
+      (.fillRect (- (/ court-width 2) lane-size) bleacher-height lane-size court-height)
 
-    ; Draw both racquets
-    (.fillRect graphics racquet-distance (- racquet-left-position racquet-middle-height) racquet-width racquet-height)
-    (.fillRect graphics (- window-width (+ racquet-width racquet-distance)) (- racquet-right-position racquet-middle-height) racquet-width racquet-height)
+      ; Draw both racquets
+      (.fillRect racquet-distance (- racquet-left-position racquet-middle-height) racquet-width racquet-height)
+      (.fillRect (- window-width (+ racquet-width racquet-distance)) (- racquet-right-position racquet-middle-height) racquet-width racquet-height)
 
-    ; Draw both scores
-    (.setFont graphics (new Font "Serif" (. Font PLAIN) 50))
-    (.drawString graphics (str @left-player-score) 50 150)
-    (.drawString graphics (str @right-player-score) 500 150)
+      ; Draw both scores
+      (.setFont (new Font "Serif" (. Font PLAIN) 50))
+      (.drawString (str @left-player-score) 50 150)
+      (.drawString (str @right-player-score) 500 150)
 
-    ; It is best to dispose() a Graphics object when done with it.
-    (.dispose graphics)
+      ; It is best to dispose() a Graphics object when done with it.
+      (.dispose))
 
     ; Shows the contents of the backbuffer on the screen.
     (.show buffer)))
