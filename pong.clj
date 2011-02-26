@@ -102,11 +102,17 @@
 
 (defn update-racquet
   [position state step]
-    (cond
-      (and (= (state :up) true) (= (state :down) true)) position
-      (= (state :up) true) (- position (* step racquet-speed))
-      (= (state :down) true) (+ position (* step racquet-speed))
-      :else position))
+    (let [top (+ bleacher-height racquet-middle-height)
+          bottom (- window-height racquet-middle-height)]
+      (cond
+        ; Collisions
+        (< position top) top
+        (> position bottom) bottom
+        ; Position updates
+        (and (= (state :up) true) (= (state :down) true)) position
+        (= (state :up) true) (- position (* step racquet-speed))
+        (= (state :down) true) (+ position (* step racquet-speed))
+        :else position)))
 
 ;;;;;;;;;;;;;;;;; Draw, Keypress, Main loop ;;;;;;;;;;;;;;;;;
 (defn drawn
