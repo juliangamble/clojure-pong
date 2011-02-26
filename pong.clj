@@ -100,7 +100,7 @@
   [game step]
   (let [ball (game :ball)
         racquet-left (game :racquet-left-pos)
-        racquet-right (game :racquet-left-pos)]
+        racquet-right (game :racquet-right-pos)]
     ; The cond form is usually a bad ideia. There should a better way to do this.
     (cond
       ; This requires some serious DRY
