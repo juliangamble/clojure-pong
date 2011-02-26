@@ -93,9 +93,9 @@
     (colision-yb? ball) (merge ball {:y (- window-height ball-size) :sy (* -1 (ball :sy))})
     (colision-xr? ball) (collided-xr ball)
     (colision-xl? ball) (collided-xl ball)
-    ; Apply the physics, I added +1 in the step in order to avoid division by zero
-    :else (merge ball {:x (+ (ball :x) (* (+ step 1) (ball :sx)))
-                       :y (+ (ball :y) (* (+ step 1) (ball :sy)))
+    ; Apply the physics
+    :else (merge ball {:x (+ (ball :x) (* step (ball :sx)))
+                       :y (+ (ball :y) (* step (ball :sy)))
                        :sy (+ (ball :sy) (* 0.000098 step))})))
 
 (defn update-racquet
