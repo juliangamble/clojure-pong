@@ -6,7 +6,7 @@
 ; http://jng.imagine27.com/articles/2009-09-12-122605_pong_in_clojure.html
 
 (import (javax.swing JFrame)
-        (java.awt Color Dimension Toolkit)
+        (java.awt Color Font Dimension Toolkit)
         (java.awt.event KeyListener))
 
 ; The window size
@@ -103,7 +103,8 @@
     (.fillRect graphics racquet-distance (- racquet-left-position racquet-middle-height) racquet-width racquet-height)
     (.fillRect graphics (- window-width (+ racquet-width racquet-distance)) (- racquet-right-position racquet-middle-height) racquet-width racquet-height)
 
-    ; Draw both scores     
+    ; Draw both scores
+    (.setFont graphics (new Font "Serif" (. Font PLAIN) 50))
     (.drawString graphics (str @left-player-score) 50 150)
     (.drawString graphics (str @right-player-score) 500 150)
 
