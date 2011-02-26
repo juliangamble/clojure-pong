@@ -35,7 +35,7 @@
 (def racquet-right-state (atom {:up false :down false}))
 
 (def ball-size 50)
-(def new-ball {:x 100 :y (+ bleacher-height lane-size 1) :sx 0.1 :sy 0})
+(def new-ball {:x 100 :y (+ bleacher-height lane-size 1) :sx 0.1 :sy 0.1})
 
 ; The player score
 (def left-player-score (atom 0))
@@ -98,9 +98,7 @@
     (colision-left? ball) (collided-left ball)
     ; Apply the physics
     :else (merge ball {:x (+ (ball :x) (* step (ball :sx)))
-                       :y (+ (ball :y) (* step (ball :sy)))
-                       :sx (+ (ball :sx) (* 0.000098 step))
-                       :sy (+ (ball :sy) (* 0.000098 step))})))
+                       :y (+ (ball :y) (* step (ball :sy)))})))
 
 (defn update-racquet
   [position state step]
@@ -215,6 +213,8 @@
            one-second 0]
       (let [step (- time old-time)]
         (drawn frame ball racquet-left racquet-right fps)
+
+        (println ball)
 
         (recur (System/currentTimeMillis)
                time
