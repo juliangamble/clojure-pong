@@ -25,11 +25,11 @@
 (def racquet-distance 10) ; How far from the court side walls
 (def racquet-speed 0.3) ; How fast the racquet moves
 
-(def new-ball {:x 100 :y 200 :sx 0.1 :sy 0})
+(def lane-size 5)
 
 (def ball-size 50)
+(def new-ball {:x 100 :y (+ bleacher-height lane-size 1) :sx 0.1 :sy 0})
 
-(def lane-size 5)
 
 ; This atom stores if the racquet is going up (1) down (-1) or is stopped (0)
 (def racquet-left-state (atom {:up false :down false}))
@@ -40,7 +40,11 @@
 
 (def score-height (/ bleacher-height 2))
 
-(defn colision-y?
+(defn colision-yt?
+  [ball]
+  (< (ball :y) (+ bleacher-height lane-size)))
+
+(defn colision-yb?
   [ball]
   (> (ball :y) (- window-height ball-size)))
 
@@ -66,7 +70,8 @@
   [ball step]
   ; The cond form is usually a bad ideia. There should a better way to do this.
   (cond
-    (colision-y? ball) (merge ball {:y (- window-height ball-size) :sy (* -1 (ball :sy))})
+    (colision-yt? ball) (merge ball {:y (+ bleacher-height lane-size) :sy (* -1 (ball :sy))})
+    (colision-yb? ball) (merge ball {:y (- window-height ball-size) :sy (* -1 (ball :sy))})
     (colision-xr? ball) (collided-xr ball)
     (colision-xl? ball) (collided-xl ball)
     ; Apply the physics, I added +1 in the step in order to avoid division by zero
