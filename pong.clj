@@ -1,3 +1,5 @@
+(ns pong)
+
 ; The pong in Clojure
 ;
 ; References:
