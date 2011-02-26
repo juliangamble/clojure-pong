@@ -9,6 +9,7 @@
 ; http://gpwiki.org/index.php/Java:Tutorials:Double_Buffering
 ; http://zetcode.com/tutorials/javagamestutorial/
 ; http://jng.imagine27.com/articles/2009-09-12-122605_pong_in_clojure.html
+; http://www.bestinclass.dk/index.clj/2010/10/taking-uncle-bob-to-school.html
 
 ; The window size
 (def window-width 800)
@@ -146,26 +147,28 @@
 
 (defn handle-keypress
   [e]
-    (cond
+    (case e
       ; Exits when 'q' is pressed
-      (= (.getKeyChar e) \q) (System/exit 0)
+      \q (System/exit 0)
 
       ; Pressing 'a' or 'z' updates the left racquet state
-      (= (.getKeyChar e) \a) (swap! racquet-left-state merge @racquet-left-state {:up true})
-      (= (.getKeyChar e) \z) (swap! racquet-left-state merge @racquet-left-state {:down true})
+      \a (swap! racquet-left-state merge @racquet-left-state {:up true})
+      \z (swap! racquet-left-state merge @racquet-left-state {:down true})
 
       ; Pressing 'j' or 'm' updates the right racquet state
-      (= (.getKeyChar e) \j) (swap! racquet-right-state merge @racquet-right-state {:up true})
-      (= (.getKeyChar e) \m) (swap! racquet-right-state merge @racquet-right-state {:down true})))
+      \j (swap! racquet-right-state merge @racquet-right-state {:up true})
+      \m (swap! racquet-right-state merge @racquet-right-state {:down true})
+      nil))
 
 (defn handle-keyrelease
   [e]
     ; Releasing the keys stops the racquet
-    (cond
-      (= (.getKeyChar e) \a) (swap! racquet-left-state merge @racquet-left-state {:up false})
-      (= (.getKeyChar e) \z) (swap! racquet-left-state merge @racquet-left-state {:down false})
-      (= (.getKeyChar e) \j) (swap! racquet-right-state merge @racquet-right-state {:up false})
-      (= (.getKeyChar e) \m) (swap! racquet-right-state merge @racquet-right-state {:down false})))
+    (case e
+      \a (swap! racquet-left-state merge @racquet-left-state {:up false})
+      \z (swap! racquet-left-state merge @racquet-left-state {:down false})
+      \j (swap! racquet-right-state merge @racquet-right-state {:up false})
+      \m (swap! racquet-right-state merge @racquet-right-state {:down false})
+      nil))
 
 (defn main
   []
@@ -182,9 +185,9 @@
     (.addKeyListener frame
       (proxy [KeyListener] []
         (keyPressed [e]
-          (handle-keypress e))
+          (handle-keypress (.getKeyChar e)))
         (keyReleased [e]
-          (handle-keyrelease e))
+          (handle-keyrelease (.getKeyChar e)))
         (keyTyped [e])))
 
     ; Makes sure everything inside the frame fits
