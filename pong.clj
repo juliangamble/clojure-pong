@@ -64,6 +64,13 @@
          (> (ball :y) top)
          (< (ball :y) (+ top racquet-height)))))
 
+(defn colision-racquet-right?
+  [ball racquet]
+  (let [top (- racquet racquet-middle-height)]
+    (and (> (ball :x) (- window-width ball-size racquet-width racquet-distance))
+         (> (ball :y) top)
+         (< (ball :y) (+ top racquet-height)))))
+
 (defn collided-xr
   [ball]
   (reset! left-player-score (inc @left-player-score))
@@ -78,7 +85,9 @@
   [ball step racquet-left racquet-right]
   ; The cond form is usually a bad ideia. There should a better way to do this.
   (cond
+    ; This requires some serious DRY
     (colision-racquet-left? ball racquet-left) (merge ball {:x (+ racquet-distance racquet-width) :sx (* -1 (ball :sx))})
+    (colision-racquet-right? ball racquet-right) (merge ball {:x (- window-width ball-size racquet-width racquet-distance) :sx (* -1 (ball :sx))})
     (colision-yt? ball) (merge ball {:y (+ bleacher-height lane-size) :sy (* -1 (ball :sy))})
     (colision-yb? ball) (merge ball {:y (- window-height ball-size) :sy (* -1 (ball :sy))})
     (colision-xr? ball) (collided-xr ball)
