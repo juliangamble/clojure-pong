@@ -42,6 +42,7 @@
 (def right-player-score (atom 0))
 
 
+;;;;;;;;;;;;;;;;; Colision checking ;;;;;;;;;;;;;;;;;
 (defn colision-top?
   [ball]
   (< (ball :y) (+ bleacher-height lane-size)))
@@ -72,6 +73,7 @@
          (> (ball :y) top)
          (< (ball :y) (+ top racquet-height)))))
 
+;;;;;;;;;;;;;;;;; Colision actions ;;;;;;;;;;;;;;;;;
 (defn collided-xr
   [ball]
   (reset! left-player-score (inc @left-player-score))
@@ -82,6 +84,7 @@
   (reset! right-player-score (inc @right-player-score))
   (merge ball {:x 0 :sx (* -1 (ball :sx))}))
 
+;;;;;;;;;;;;;;;;; Object updates ;;;;;;;;;;;;;;;;;
 (defn update-ball
   [ball step racquet-left racquet-right]
   ; The cond form is usually a bad ideia. There should a better way to do this.
@@ -107,6 +110,7 @@
       (= (state :down) true) (+ position (* step racquet-speed))
       :else position))
 
+;;;;;;;;;;;;;;;;; Draw, Keypress, Main loop ;;;;;;;;;;;;;;;;;
 (defn drawn
   [frame ball racquet-left-position racquet-right-position fps]
   (let [buffer (.getBufferStrategy frame)
