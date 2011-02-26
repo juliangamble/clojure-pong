@@ -38,14 +38,10 @@
 (def racquet-left-state (atom {:up false :down false}))
 (def racquet-right-state (atom {:up false :down false}))
 
-(def ball-size 3)
-
-; The player score
-(def left-player-score (atom 0))
-(def right-player-score (atom 0))
+(def ball-size 10)
 
 ; Game
-(def new-game {:ball {:x 100 :y (+ bleacher-height lane-size 1) :sx 0.1 :sy 0.1}
+(def new-game {:ball {:x 100 :y (+ bleacher-height lane-size 1) :sx 0.2 :sy 0.2}
                :player-left-score 0
                :player-right-score 0
                :racquet-left-pos 400
@@ -86,14 +82,18 @@
 
 ;;;;;;;;;;;;;;;;; Colision actions ;;;;;;;;;;;;;;;;;
 (defn collided-right
-  [ball]
-  (reset! left-player-score (inc @left-player-score))
-  (merge ball {:x (- window-width ball-size) :sx (* -1 (ball :sx))}))
+  [game]
+  (let [ball (game :ball)]
+    (merge game {:ball (merge ball {:x (- window-width ball-size)
+                                    :sx (* -1 (ball :sx))})
+                 :player-left-score (inc (game :player-left-score))})))
 
 (defn collided-left
-  [ball]
-  (reset! right-player-score (inc @right-player-score))
-  (merge ball {:x 0 :sx (* -1 (ball :sx))}))
+  [game]
+  (let [ball (game :ball)]
+    (merge game {:ball (merge ball {:x 0
+                                    :sx (* -1 (ball :sx))})
+                 :player-right-score (inc (game :player-right-score))})))
 
 ;;;;;;;;;;;;;;;;; Object updates ;;;;;;;;;;;;;;;;;
 (defn update-ball
@@ -108,8 +108,6 @@
       (colision-racquet-right? ball racquet-right) (merge ball {:x (- window-width ball-size racquet-width racquet-distance) :sx (* -1 (ball :sx))})
       (colision-top? ball) (merge ball {:y (+ bleacher-height lane-size) :sy (* -1 (ball :sy))})
       (colision-bottom? ball) (merge ball {:y (- window-height ball-size) :sy (* -1 (ball :sy))})
-      (colision-right? ball) (collided-right ball)
-      (colision-left? ball) (collided-left ball)
       ; Apply the physics
       :else (merge ball {:x (+ (ball :x) (* step (ball :sx)))
                          :y (+ (ball :y) (* step (ball :sy)))}))))
@@ -134,9 +132,13 @@
         racquet-left (update-racquet (game :racquet-left-pos) @racquet-left-state step)
         racquet-right (update-racquet (game :racquet-right-pos) @racquet-right-state step)]
 
-    (merge game {:ball ball
-                 :racquet-left-pos racquet-left
-                 :racquet-right-pos racquet-right})))
+    (cond
+      (colision-right? ball) (collided-right game)
+      (colision-left? ball) (collided-left game)
+      :else
+      (merge game {:ball ball
+                   :racquet-left-pos racquet-left
+                   :racquet-right-pos racquet-right}))))
 
 ;;;;;;;;;;;;;;;;; Draw, Keypress, Main loop ;;;;;;;;;;;;;;;;;
 (defn drawn
@@ -168,8 +170,8 @@
 
       ; Draw both scores
       (.setFont (new Font "Serif" (. Font PLAIN) 50))
-      (.drawString (str @left-player-score) 50 score-height)
-      (.drawString (str @right-player-score) 500 score-height)
+      (.drawString (str (game :player-left-score)) 50 score-height)
+      (.drawString (str (game :player-right-score)) 500 score-height)
 
       ; Draw FPS counter
       (.setFont (new Font "Serif" (. Font PLAIN) 20))
