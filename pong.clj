@@ -23,6 +23,7 @@
 (def racquet-middle-height (/ racquet-height 2))
 (def racquet-width 10)
 (def racquet-distance 10) ; How far from the side court walls
+(def racquet-speed 0.3) ; How fast the racquet moves
 
 (def new-ball {:x 100 :y 200 :sx 0.1 :sy 0})
 
@@ -30,9 +31,9 @@
 
 (def lane-size 5)
 
-; Defines a atom to store the rackets positions
-(def racquet-left-position (atom (+ bleacher-height (/ court-height 2))))
-(def racquet-right-position (atom (+ bleacher-height (/ court-height 2))))
+; This atom stores if the racquet is going up (1) down (-1) or is stopped (0)
+(def racquet-left-state (atom 0))
+(def racquet-right-state (atom 0))
 
 (defn colision-y?
   [ball]
@@ -58,8 +59,15 @@
                        :y (+ (ball :y) (* (+ step 1) (ball :sy)))
                        :sy (+ (ball :sy) (* 0.000098 step))})))
 
+(defn update-racket
+  [position state step]
+    (cond
+      (= state 1) (- position (* step racquet-speed))
+      (= state -1) (+ position (* step racquet-speed))
+      (= state 0) position))
+
 (defn drawn
-  [frame ball]
+  [frame ball racquet-left-position racquet-right-position]
   (let [buffer (.getBufferStrategy frame)
         graphics (.getDrawGraphics buffer)]
 
@@ -78,10 +86,10 @@
     (.fillRect graphics (- (/ court-width 2) lane-size) bleacher-height lane-size court-height)
 
     ; Draw the left racket
-    (.fillRect graphics racquet-distance (- @racquet-left-position racquet-middle-height) racquet-width racquet-height)
+    (.fillRect graphics racquet-distance (- racquet-left-position racquet-middle-height) racquet-width racquet-height)
 
     ; Draw the right racket
-    (.fillRect graphics (- window-width (+ racquet-width racquet-distance)) (- @racquet-right-position racquet-middle-height) racquet-width racquet-height)
+    (.fillRect graphics (- window-width (+ racquet-width racquet-distance)) (- racquet-right-position racquet-middle-height) racquet-width racquet-height)
 
     ; It is best to dispose() a Graphics object when done with it.
     (.dispose graphics)
@@ -107,18 +115,21 @@
           ; Exits when 'q' is pressed
           (if (= (.getKeyChar e) \q) (System/exit 0))
 
-          ; Pressing 'a' or 'z' updates the left racket position
-          (if (and (< @racquet-left-position (- window-height racquet-middle-height)) (= (.getKeyChar e) \z))
-            (swap! racquet-left-position + 5))
-          (if (and (> @racquet-left-position 25) (= (.getKeyChar e) \a))
-            (swap! racquet-left-position - 5))
+          ; Pressing 'a' or 'z' updates the left racquet state
+          (if (= (.getKeyChar e) \a) (reset! racquet-left-state 1))
+          (if (= (.getKeyChar e) \z) (reset! racquet-left-state -1))
 
-          ; Pressing 'j' or 'm' updates the right racket position
-          (if (and (< @racquet-right-position (- window-height racquet-middle-height)) (= (.getKeyChar e) \m))
-            (swap! racquet-right-position + 5))
-          (if (and (> @racquet-right-position 25) (= (.getKeyChar e) \j))
-            (swap! racquet-right-position - 5)))
-        (keyReleased [e])
+          ; Pressing 'j' or 'm' updates the right racquet state
+          (if (= (.getKeyChar e) \j) (reset! racquet-right-state 1))
+          (if (= (.getKeyChar e) \m) (reset! racquet-right-state -1)))
+
+        (keyReleased [e]
+          ; Releasing the keys stops the racquet
+          (if (or (= (.getKeyChar e) \a) (= (.getKeyChar e) \z))
+            (reset! racquet-left-state 0))
+          (if (or (= (.getKeyChar e) \j) (= (.getKeyChar e) \m))
+            (reset! racquet-right-state 0)))
+
         (keyTyped [e])))
 
     ; Makes sure everything inside the frame fits
@@ -126,9 +137,9 @@
 
     (.show frame)
 
-    (loop [time start-time old-time start-time ball new-ball]
+    (loop [time start-time old-time start-time ball new-ball racket-left 400 racket-right 400]
       (let [step (- time old-time)]
-        (drawn frame ball)
+        (drawn frame ball racket-left racket-right)
 
         ; (println ball)
 
@@ -136,6 +147,10 @@
         ; We need to implement a better game loop (Threads?)
         (Thread/sleep 20)
 
-        (recur (System/currentTimeMillis) time (update-ball ball step))))))
+        (recur (System/currentTimeMillis)
+               time
+               (update-ball ball step)
+               (update-racket racket-left @racquet-left-state step)
+               (update-racket racket-right @racquet-right-state step))))))
 
 (main)
