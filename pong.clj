@@ -18,28 +18,28 @@
 (def bleacher-height 200)
 (def court-height (- court-width (/ court-width 2.88)))
 
+(def lane-size 5)
 (def window-height (+ court-height bleacher-height))
+(def score-height (/ bleacher-height 2))
 
+; The racquet properties
 (def racquet-height (/ court-height 5))
 (def racquet-middle-height (/ racquet-height 2))
 (def racquet-width 10)
 (def racquet-distance 10) ; How far from the court side walls
 (def racquet-speed 0.3) ; How fast the racquet moves
 
-(def lane-size 5)
-
-(def ball-size 50)
-(def new-ball {:x 100 :y (+ bleacher-height lane-size 1) :sx 0.1 :sy 0})
-
-
 ; This atom stores if the racquet is going up (1) down (-1) or is stopped (0)
 (def racquet-left-state (atom {:up false :down false}))
 (def racquet-right-state (atom {:up false :down false}))
 
+(def ball-size 50)
+(def new-ball {:x 100 :y (+ bleacher-height lane-size 1) :sx 0.1 :sy 0})
+
+; The player score
 (def left-player-score (atom 0))
 (def right-player-score (atom 0))
 
-(def score-height (/ bleacher-height 2))
 
 (defn colision-yt?
   [ball]
