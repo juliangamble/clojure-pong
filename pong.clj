@@ -34,7 +34,7 @@
 (def racquet-left-state (atom {:up false :down false}))
 (def racquet-right-state (atom {:up false :down false}))
 
-(def ball-size 50)
+(def ball-size 3)
 (def new-ball {:x 100 :y (+ bleacher-height lane-size 1) :sx 0.1 :sy 0.1})
 
 ; The player score
@@ -61,17 +61,19 @@
 
 (defn colision-racquet-left?
   [ball racquet]
-  (let [top (- racquet racquet-middle-height)]
+  (let [top (- racquet racquet-middle-height)
+        bottom (+ racquet racquet-middle-height)]
     (and (< (ball :x) (+ racquet-distance racquet-width))
          (> (ball :y) top)
-         (< (ball :y) (+ top racquet-height)))))
+         (< (ball :y) bottom))))
 
 (defn colision-racquet-right?
   [ball racquet]
-  (let [top (- racquet racquet-middle-height)]
+  (let [top (- racquet racquet-middle-height)
+        bottom (+ racquet racquet-middle-height)]
     (and (> (ball :x) (- window-width ball-size racquet-width racquet-distance))
          (> (ball :y) top)
-         (< (ball :y) (+ top racquet-height)))))
+         (< (ball :y) bottom))))
 
 ;;;;;;;;;;;;;;;;; Colision actions ;;;;;;;;;;;;;;;;;
 (defn collided-right
