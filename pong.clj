@@ -1,13 +1,14 @@
+(ns pong
+  (:import (javax.swing JFrame)
+           (java.awt Color Font Dimension Toolkit)
+           (java.awt.event KeyListener)))
+
 ; The pong in Clojure
 ;
 ; References:
 ; http://gpwiki.org/index.php/Java:Tutorials:Double_Buffering
 ; http://zetcode.com/tutorials/javagamestutorial/
 ; http://jng.imagine27.com/articles/2009-09-12-122605_pong_in_clojure.html
-
-(import (javax.swing JFrame)
-        (java.awt Color Font Dimension Toolkit)
-        (java.awt.event KeyListener))
 
 ; The window size
 (def window-width 800)
