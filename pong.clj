@@ -32,8 +32,8 @@
 (def lane-size 5)
 
 ; This atom stores if the racquet is going up (1) down (-1) or is stopped (0)
-(def racquet-left-state (atom 0))
-(def racquet-right-state (atom 0))
+(def racquet-left-state (atom {:up false :down false}))
+(def racquet-right-state (atom {:up false :down false}))
 
 (defn colision-y?
   [ball]
@@ -62,9 +62,10 @@
 (defn update-racket
   [position state step]
     (cond
-      (= state 1) (- position (* step racquet-speed))
-      (= state -1) (+ position (* step racquet-speed))
-      (= state 0) position))
+      (and (= (state :up) true) (= (state :down) true)) position
+      (= (state :up) true) (- position (* step racquet-speed))
+      (= (state :down) true) (+ position (* step racquet-speed))
+      :else position))
 
 (defn drawn
   [frame ball racquet-left-position racquet-right-position]
@@ -116,19 +117,19 @@
           (if (= (.getKeyChar e) \q) (System/exit 0))
 
           ; Pressing 'a' or 'z' updates the left racquet state
-          (if (= (.getKeyChar e) \a) (reset! racquet-left-state 1))
-          (if (= (.getKeyChar e) \z) (reset! racquet-left-state -1))
+          (if (= (.getKeyChar e) \a) (swap! racquet-left-state merge @racquet-left-state {:up true}))
+          (if (= (.getKeyChar e) \z) (swap! racquet-left-state merge @racquet-left-state {:down true}))
 
           ; Pressing 'j' or 'm' updates the right racquet state
-          (if (= (.getKeyChar e) \j) (reset! racquet-right-state 1))
-          (if (= (.getKeyChar e) \m) (reset! racquet-right-state -1)))
+          (if (= (.getKeyChar e) \j) (swap! racquet-right-state merge @racquet-right-state {:up true}))
+          (if (= (.getKeyChar e) \m) (swap! racquet-right-state merge @racquet-right-state {:down true})))
 
         (keyReleased [e]
           ; Releasing the keys stops the racquet
-          (if (or (= (.getKeyChar e) \a) (= (.getKeyChar e) \z))
-            (reset! racquet-left-state 0))
-          (if (or (= (.getKeyChar e) \j) (= (.getKeyChar e) \m))
-            (reset! racquet-right-state 0)))
+          (if (= (.getKeyChar e) \a) (swap! racquet-left-state merge @racquet-left-state {:up false}))
+          (if (= (.getKeyChar e) \z) (swap! racquet-left-state merge @racquet-left-state {:down false}))
+          (if (= (.getKeyChar e) \j) (swap! racquet-right-state merge @racquet-right-state {:up false}))
+          (if (= (.getKeyChar e) \m) (swap! racquet-right-state merge @racquet-right-state {:down false})))
 
         (keyTyped [e])))
 
@@ -141,7 +142,7 @@
       (let [step (- time old-time)]
         (drawn frame ball racket-left racket-right)
 
-        ; (println ball)
+        ;(println @racquet-left-state)
 
         ; Since Clojure is so fast, a sleep is "required" in order to avoid 0ms time steps
         ; We need to implement a better game loop (Threads?)
