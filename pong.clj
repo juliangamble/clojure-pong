@@ -54,12 +54,12 @@
   [ball]
   (reset! left-player-score (inc @left-player-score))
   (merge ball {:x (- window-width ball-size) :sx (* -1 (ball :sx))}))
-                         
+
 (defn collided-xl
   [ball]
   (reset! right-player-score (inc @right-player-score))
   (merge ball {:x 0 :sx (* -1 (ball :sx))}))
-                         
+
 (defn update-ball
   [ball step]
   ; The cond form is usually a bad ideia. There should a better way to do this.
@@ -81,7 +81,7 @@
       :else position))
 
 (defn drawn
-  [frame ball racquet-left-position racquet-right-position]
+  [frame ball racquet-left-position racquet-right-position fps]
   (let [buffer (.getBufferStrategy frame)
         graphics (.getDrawGraphics buffer)]
 
@@ -103,9 +103,12 @@
     (.fillRect graphics racquet-distance (- racquet-left-position racquet-middle-height) racquet-width racquet-height)
     (.fillRect graphics (- window-width (+ racquet-width racquet-distance)) (- racquet-right-position racquet-middle-height) racquet-width racquet-height)
 
-    ; Draw both scores     
+    ; Draw both scores
     (.drawString graphics (str @left-player-score) 50 150)
     (.drawString graphics (str @right-player-score) 500 150)
+
+    ; Draw FPS counter
+    (.drawString graphics (str fps) 750 10)
 
     ; It is best to dispose() a Graphics object when done with it.
     (.dispose graphics)
@@ -153,11 +156,16 @@
 
     (.show frame)
 
-    (loop [time start-time old-time start-time ball new-ball racket-left 400 racket-right 400]
+    (loop [time start-time
+           old-time start-time
+           ball new-ball
+           racket-left 400
+           racket-right 400
+           fps 0
+           frame-counter 0
+           one-second 0]
       (let [step (- time old-time)]
-        (drawn frame ball racket-left racket-right)
-
-        ;(println @racquet-left-state)
+        (drawn frame ball racket-left racket-right fps)
 
         ; Since Clojure is so fast, a sleep is "required" in order to avoid 0ms time steps
         ; We need to implement a better game loop (Threads?)
@@ -167,6 +175,9 @@
                time
                (update-ball ball step)
                (update-racket racket-left @racquet-left-state step)
-               (update-racket racket-right @racquet-right-state step))))))
+               (update-racket racket-right @racquet-right-state step)
+               (if (>= one-second 1000) frame-counter fps)
+               (if (>= one-second 1000) 0 (inc frame-counter))
+               (if (>= one-second 1000) 0 (+ one-second step)))))))
 
 (main)
