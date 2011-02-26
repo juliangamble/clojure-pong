@@ -38,6 +38,8 @@
 (def left-player-score (atom 0))
 (def right-player-score (atom 0))
 
+(def score-height (/ bleacher-height 2))
+
 (defn colision-y?
   [ball]
   (> (ball :y) (- window-height ball-size)))
@@ -106,8 +108,8 @@
 
       ; Draw both scores
       (.setFont (new Font "Serif" (. Font PLAIN) 50))
-      (.drawString (str @left-player-score) 50 150)
-      (.drawString (str @right-player-score) 500 150)
+      (.drawString (str @left-player-score) 50 score-height)
+      (.drawString (str @right-player-score) 500 score-height)
 
       ; It is best to dispose() a Graphics object when done with it.
       (.dispose))
