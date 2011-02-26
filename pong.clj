@@ -74,12 +74,12 @@
          (< (ball :y) (+ top racquet-height)))))
 
 ;;;;;;;;;;;;;;;;; Colision actions ;;;;;;;;;;;;;;;;;
-(defn collided-xr
+(defn collided-right
   [ball]
   (reset! left-player-score (inc @left-player-score))
   (merge ball {:x (- window-width ball-size) :sx (* -1 (ball :sx))}))
 
-(defn collided-xl
+(defn collided-left
   [ball]
   (reset! right-player-score (inc @right-player-score))
   (merge ball {:x 0 :sx (* -1 (ball :sx))}))
@@ -94,8 +94,8 @@
     (colision-racquet-right? ball racquet-right) (merge ball {:x (- window-width ball-size racquet-width racquet-distance) :sx (* -1 (ball :sx))})
     (colision-top? ball) (merge ball {:y (+ bleacher-height lane-size) :sy (* -1 (ball :sy))})
     (colision-bottom? ball) (merge ball {:y (- window-height ball-size) :sy (* -1 (ball :sy))})
-    (colision-right? ball) (collided-xr ball)
-    (colision-left? ball) (collided-xl ball)
+    (colision-right? ball) (collided-right ball)
+    (colision-left? ball) (collided-left ball)
     ; Apply the physics
     :else (merge ball {:x (+ (ball :x) (* step (ball :sx)))
                        :y (+ (ball :y) (* step (ball :sy)))
