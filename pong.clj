@@ -22,7 +22,7 @@
 (def racquet-height (/ court-height 5))
 (def racquet-middle-height (/ racquet-height 2))
 (def racquet-width 10)
-(def racquet-distance 10) ; How far from the side court walls
+(def racquet-distance 10) ; How far from the court side walls
 (def racquet-speed 0.3) ; How fast the racquet moves
 
 (def new-ball {:x 100 :y 200 :sx 0.1 :sy 0})
