@@ -35,6 +35,9 @@
 (def racquet-left-state (atom {:up false :down false}))
 (def racquet-right-state (atom {:up false :down false}))
 
+(def left-player-score (atom 0))
+(def right-player-score (atom 0))
+
 (defn colision-y?
   [ball]
   (> (ball :y) (- window-height ball-size)))
@@ -47,13 +50,23 @@
   [ball]
   (< (ball :x) 0))
 
+(defn collided-xr
+  [ball]
+  (reset! left-player-score (inc @left-player-score))
+  (merge ball {:x (- window-width ball-size) :sx (* -1 (ball :sx))}))
+                         
+(defn collided-xl
+  [ball]
+  (reset! right-player-score (inc @right-player-score))
+  (merge ball {:x 0 :sx (* -1 (ball :sx))}))
+                         
 (defn update-ball
   [ball step]
   ; The cond form is usually a bad ideia. There should a better way to do this.
   (cond
     (colision-y? ball) (merge ball {:y (- window-height ball-size) :sy (* -1 (ball :sy))})
-    (colision-xr? ball) (merge ball {:x (- window-width ball-size) :sx (* -1 (ball :sx))})
-    (colision-xl? ball) (merge ball {:x 0 :sx (* -1 (ball :sx))})
+    (colision-xr? ball) (collided-xr ball)
+    (colision-xl? ball) (collided-xl ball)
     ; Apply the physics, I added +1 in the step in order to avoid division by zero
     :else (merge ball {:x (+ (ball :x) (* (+ step 1) (ball :sx)))
                        :y (+ (ball :y) (* (+ step 1) (ball :sy)))
@@ -91,6 +104,9 @@
 
     ; Draw the right racket
     (.fillRect graphics (- window-width (+ racquet-width racquet-distance)) (- racquet-right-position racquet-middle-height) racquet-width racquet-height)
+
+    (.drawString graphics (str @left-player-score) 50 150)
+    (.drawString graphics (str @right-player-score) 500 150)
 
     ; It is best to dispose() a Graphics object when done with it.
     (.dispose graphics)
