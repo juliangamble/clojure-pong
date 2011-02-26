@@ -150,6 +150,10 @@
     ; Shows the contents of the backbuffer on the screen.
     (.show buffer)))
 
+(defn swap-key
+  [atom struct]
+  (swap! atom merge @atom struct))
+
 (defn handle-keypress
   [e]
     (case e
@@ -157,22 +161,22 @@
       \q (System/exit 0)
 
       ; Pressing 'a' or 'z' updates the left racquet state
-      \a (swap! racquet-left-state merge @racquet-left-state {:up true})
-      \z (swap! racquet-left-state merge @racquet-left-state {:down true})
+      \a (swap-key racquet-left-state {:up true})
+      \z (swap-key racquet-left-state {:down true})
 
       ; Pressing 'j' or 'm' updates the right racquet state
-      \j (swap! racquet-right-state merge @racquet-right-state {:up true})
-      \m (swap! racquet-right-state merge @racquet-right-state {:down true})
+      \j (swap-key racquet-right-state {:up true})
+      \m (swap-key racquet-right-state {:down true})
       nil))
 
 (defn handle-keyrelease
   [e]
     ; Releasing the keys stops the racquet
     (case e
-      \a (swap! racquet-left-state merge @racquet-left-state {:up false})
-      \z (swap! racquet-left-state merge @racquet-left-state {:down false})
-      \j (swap! racquet-right-state merge @racquet-right-state {:up false})
-      \m (swap! racquet-right-state merge @racquet-right-state {:down false})
+      \a (swap-key racquet-left-state {:up false})
+      \z (swap-key racquet-left-state {:down false})
+      \j (swap-key racquet-right-state {:up false})
+      \m (swap-key racquet-right-state {:down false})
       nil))
 
 (defn main
