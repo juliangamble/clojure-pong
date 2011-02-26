@@ -219,7 +219,8 @@
            fps 0
            frame-counter 0
            one-second 0]
-      (let [step (- time old-time)]
+      (let [step (- time old-time)
+            new-fps? (>= one-second 1000)]
         (drawn frame ball racquet-left racquet-right fps)
 
         (recur (System/currentTimeMillis)
@@ -227,8 +228,8 @@
                (update-ball ball step racquet-left racquet-right)
                (update-racquet racquet-left @racquet-left-state step)
                (update-racquet racquet-right @racquet-right-state step)
-               (if (>= one-second 1000) frame-counter fps)
-               (if (>= one-second 1000) 0 (inc frame-counter))
-               (if (>= one-second 1000) 0 (+ one-second step)))))))
+               (if new-fps? frame-counter fps)
+               (if new-fps? 0 (inc frame-counter))
+               (if new-fps? 0 (+ one-second step)))))))
 
 (main)
