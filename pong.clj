@@ -57,6 +57,13 @@
   [ball]
   (< (ball :x) 0))
 
+(defn colision-racquet-left?
+  [ball racquet]
+  (let [top (- racquet racquet-middle-height)]
+    (and (< (ball :x) (+ racquet-distance racquet-width))
+         (> (ball :y) top)
+         (< (ball :y) (+ top racquet-height)))))
+
 (defn collided-xr
   [ball]
   (reset! left-player-score (inc @left-player-score))
@@ -68,9 +75,10 @@
   (merge ball {:x 0 :sx (* -1 (ball :sx))}))
 
 (defn update-ball
-  [ball step]
+  [ball step racquet-left racquet-right]
   ; The cond form is usually a bad ideia. There should a better way to do this.
   (cond
+    (colision-racquet-left? ball racquet-left) (merge ball {:x (+ racquet-distance racquet-width) :sx (* -1 (ball :sx))})
     (colision-yt? ball) (merge ball {:y (+ bleacher-height lane-size) :sy (* -1 (ball :sy))})
     (colision-yb? ball) (merge ball {:y (- window-height ball-size) :sy (* -1 (ball :sy))})
     (colision-xr? ball) (collided-xr ball)
@@ -80,7 +88,7 @@
                        :y (+ (ball :y) (* (+ step 1) (ball :sy)))
                        :sy (+ (ball :sy) (* 0.000098 step))})))
 
-(defn update-racket
+(defn update-racquet
   [position state step]
     (cond
       (and (= (state :up) true) (= (state :down) true)) position
@@ -170,19 +178,19 @@
     (loop [time start-time
            old-time start-time
            ball new-ball
-           racket-left 400
-           racket-right 400
+           racquet-left 400
+           racquet-right 400
            fps 0
            frame-counter 0
            one-second 0]
       (let [step (- time old-time)]
-        (drawn frame ball racket-left racket-right fps)
+        (drawn frame ball racquet-left racquet-right fps)
 
         (recur (System/currentTimeMillis)
                time
-               (update-ball ball step)
-               (update-racket racket-left @racquet-left-state step)
-               (update-racket racket-right @racquet-right-state step)
+               (update-ball ball step racquet-left racquet-right)
+               (update-racquet racquet-left @racquet-left-state step)
+               (update-racquet racquet-right @racquet-right-state step)
                (if (>= one-second 1000) frame-counter fps)
                (if (>= one-second 1000) 0 (inc frame-counter))
                (if (>= one-second 1000) 0 (+ one-second step)))))))
