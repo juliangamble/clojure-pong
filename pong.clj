@@ -14,6 +14,7 @@
 ; http://zetcode.com/tutorials/javagamestutorial/
 ; http://jng.imagine27.com/articles/2009-09-12-122605_pong_in_clojure.html
 ; http://www.bestinclass.dk/index.clj/2010/10/taking-uncle-bob-to-school.html
+; http://www.youtube.com/watch?v=nzHDQvzUXL0
 
 ; The window size
 (def window-width 800)
