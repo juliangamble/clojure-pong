@@ -242,6 +242,7 @@
     (doto frame
       (.setDefaultCloseOperation JFrame/EXIT_ON_CLOSE)
       (.setUndecorated true)
+      ;(.setIgnoreRepaint true) ; This is supposed to give us extra FPS, but I see to diference
       (.setResizable false))
 
     (.setFullScreenWindow gd frame)
