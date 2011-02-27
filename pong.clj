@@ -1,6 +1,6 @@
 (ns pong
   (:import (javax.swing JFrame)
-           (java.awt Color Font Dimension Toolkit)
+           (java.awt Color Font Dimension GraphicsEnvironment Toolkit)
            (java.awt.event KeyListener)))
 
 ; The pong in Clojure
@@ -234,13 +234,18 @@
 (defn main
   []
   (let [frame (new JFrame "Clojure Pong")
-        start-time (System/currentTimeMillis)]
+        start-time (System/currentTimeMillis)
+        toolkit (. Toolkit getDefaultToolkit)
+        ge (GraphicsEnvironment/getLocalGraphicsEnvironment)
+        gd (. ge getDefaultScreenDevice)]
     (doto frame
       (.setDefaultCloseOperation JFrame/EXIT_ON_CLOSE)
-      (.setSize (new Dimension window-width window-height))
-      (.setLocationRelativeTo nil)
       (.setUndecorated true)
-      (.setResizable false)
+      (.setResizable false))
+
+    (.setFullScreenWindow gd frame)
+
+    (doto frame
       (.setVisible true)
       (.createBufferStrategy 2)
 
