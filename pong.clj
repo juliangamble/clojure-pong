@@ -174,13 +174,13 @@
                  (game :racquet-height))
 
       ; Draw both scores
-      (.setFont (new Font "Serif" (. Font PLAIN) 50))
+      (.setFont (new Font "Courier" (. Font BOLD) 50))
       (.drawString (str (game :player-left-score)) (/ (game :window-width) 4) (game :score-height))
       (.drawString (str (game :player-right-score)) (* (/ (game :window-width) 4) 3) (game :score-height))
 
       ; Draw FPS counter
-      (.setFont (new Font "Serif" (. Font PLAIN) 20))
-      (.drawString (str fps) 770 20)
+      (.setFont (new Font "Courier" (. Font PLAIN) 20))
+      (.drawString (str "FPS: " fps) 770 20)
 
       ; It is best to dispose() a Graphics object when done with it.
       (.dispose))
