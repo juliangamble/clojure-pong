@@ -38,8 +38,9 @@
   (< ((game :ball) :x) 0))
 
 (defn colision-racquet-left?
-  [game racquet]
+  [game]
   (let [ball (game :ball)
+        racquet (game :racquet-left-pos)
         top (- racquet (game :racquet-middle-height))
         bottom (+ racquet (game :racquet-middle-height))]
     (and (< (ball :x) (+ (game :racquet-distance) (game :racquet-width)))
@@ -47,8 +48,9 @@
          (< (ball :y) bottom))))
 
 (defn colision-racquet-right?
-  [game racquet]
+  [game]
   (let [ball (game :ball)
+        racquet (game :racquet-right-pos)
         top (- racquet (game :racquet-middle-height))
         bottom (+ racquet (game :racquet-middle-height))]
     (and (> (ball :x) (- (game :window-width) (game :ball-size) (game :racquet-width) (game :racquet-distance)))
@@ -91,14 +93,12 @@
 ;;;;;;;;;;;;;;;;; Object updates ;;;;;;;;;;;;;;;;;
 (defn update-ball
   [game step]
-  (let [ball (game :ball)
-        racquet-left (game :racquet-left-pos)
-        racquet-right (game :racquet-right-pos)]
+  (let [ball (game :ball)]
     ; The cond form is usually a bad ideia. There should a better way to do this.
     (cond
       ; This requires some serious DRY
-      (colision-racquet-left? game racquet-left) (collided-racquet-left game)
-      (colision-racquet-right? game racquet-right) (collided-racquet-right game)
+      (colision-racquet-left? game) (collided-racquet-left game)
+      (colision-racquet-right? game) (collided-racquet-right game)
       (colision-top? game) (merge game {:ball (merge ball {:y (+ (game :bleacher-height) (game :lane-size))
                                                            :sy (* -1 (ball :sy))})})
       (colision-bottom? game) (merge game {:ball (merge ball {:y (- (game :window-height) (game :ball-size))
