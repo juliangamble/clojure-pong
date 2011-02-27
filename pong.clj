@@ -175,8 +175,8 @@
 
       ; Draw both scores
       (.setFont (new Font "Serif" (. Font PLAIN) 50))
-      (.drawString (str (game :player-left-score)) 50 (game :score-height))
-      (.drawString (str (game :player-right-score)) 500 (game :score-height))
+      (.drawString (str (game :player-left-score)) (/ (game :window-width) 4) (game :score-height))
+      (.drawString (str (game :player-right-score)) (* (/ (game :window-width) 4) 3) (game :score-height))
 
       ; Draw FPS counter
       (.setFont (new Font "Serif" (. Font PLAIN) 20))
