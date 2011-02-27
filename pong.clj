@@ -16,69 +16,42 @@
 ; http://www.bestinclass.dk/index.clj/2010/10/taking-uncle-bob-to-school.html
 ; http://www.youtube.com/watch?v=nzHDQvzUXL0
 
-; The window size
-(def window-width 800)
-
-; A tennis court size: 23.78m by 8.23m, which gives a proportion of 2,88
-(def court-width window-width)
-(def bleacher-height 200)
-(def court-height (- court-width (/ court-width 2.88)))
-
-(def lane-size 5)
-(def window-height (+ court-height bleacher-height))
-(def score-height (/ bleacher-height 2))
-
-; The racquet properties
-(def racquet-height (/ court-height 5))
-(def racquet-middle-height (/ racquet-height 2))
-(def racquet-width 10)
-(def racquet-distance 10) ; How far from the court side walls
-(def racquet-speed 0.3) ; How fast the racquet moves
-
 ; This atom stores if the racquet is going up (1) down (-1) or is stopped (0)
 (def racquet-left-state (atom {:up false :down false}))
 (def racquet-right-state (atom {:up false :down false}))
 
-(def ball-size 10)
-
-; Game
-(def new-game {:ball {:x 100 :y (+ bleacher-height lane-size 1) :sx 0.2 :sy 0.2}
-               :speed 0.5
-               :player-left-score 0
-               :player-right-score 0
-               :racquet-left-pos 400
-               :racquet-right-pos 400})
-
 ;;;;;;;;;;;;;;;;; Colision checking ;;;;;;;;;;;;;;;;;
 (defn colision-top?
-  [ball]
-  (< (ball :y) (+ bleacher-height lane-size)))
+  [game]
+  (< ((game :ball) :y) (+ (game :bleacher-height) (game :lane-size))))
 
 (defn colision-bottom?
-  [ball]
-  (> (ball :y) (- window-height ball-size)))
+  [game]
+  (> ((game :ball) :y) (- (game :window-height) (game :ball-size))))
 
 (defn colision-right?
-  [ball]
-  (> (ball :x) (- window-width ball-size)))
+  [game]
+  (> ((game :ball) :x) (- (game :window-width) (game :ball-size))))
 
 (defn colision-left?
-  [ball]
-  (< (ball :x) 0))
+  [game]
+  (< ((game :ball) :x) 0))
 
 (defn colision-racquet-left?
-  [ball racquet]
-  (let [top (- racquet racquet-middle-height)
-        bottom (+ racquet racquet-middle-height)]
-    (and (< (ball :x) (+ racquet-distance racquet-width))
+  [game racquet]
+  (let [ball (game :ball)
+        top (- racquet (game :racquet-middle-height))
+        bottom (+ racquet (game :racquet-middle-height))]
+    (and (< (ball :x) (+ (game :racquet-distance) (game :racquet-width)))
          (> (ball :y) top)
          (< (ball :y) bottom))))
 
 (defn colision-racquet-right?
-  [ball racquet]
-  (let [top (- racquet racquet-middle-height)
-        bottom (+ racquet racquet-middle-height)]
-    (and (> (ball :x) (- window-width ball-size racquet-width racquet-distance))
+  [game racquet]
+  (let [ball (game :ball)
+        top (- racquet (game :racquet-middle-height))
+        bottom (+ racquet (game :racquet-middle-height))]
+    (and (> (ball :x) (- (game :window-width) (game :ball-size) (game :racquet-width) (game :racquet-distance)))
          (> (ball :y) top)
          (< (ball :y) bottom))))
 
@@ -86,7 +59,7 @@
 (defn collided-right
   [game]
   (let [ball (game :ball)]
-    (merge game {:ball (merge ball {:x (- window-width ball-size)
+    (merge game {:ball (merge ball {:x (- (game :window-width) (game :ball-size))
                                     :sx (* -1 (ball :sx))})
                  :player-left-score (inc (game :player-left-score))})))
 
@@ -94,19 +67,19 @@
   [game]
   (let [ball (game :ball)
         racquet (game :racquet-right-pos)
-        hit (/ (- (ball :y) racquet) racquet-middle-height)]
-    (merge ball {:x (- window-width ball-size racquet-width racquet-distance)
-                 :sx (* -1 (Math/cos hit) (game :speed))
-                 :sy (* (Math/sin hit) (game :speed))})))
+        hit (/ (- (ball :y) racquet) (game :racquet-middle-height))]
+    (merge game {:ball (merge ball {:x (- (game :window-width) (game :ball-size) (game :racquet-width) (game :racquet-distance))
+                                    :sx (* -1 (Math/cos hit) (game :speed))
+                                    :sy (* (Math/sin hit) (game :speed))})})))
 
 (defn collided-racquet-left
   [game]
   (let [ball (game :ball)
         racquet (game :racquet-left-pos)
-        hit (/ (- (ball :y) racquet) racquet-middle-height)]
-    (merge ball {:x (+ racquet-distance racquet-width)
-                 :sx (* (Math/cos hit) (game :speed))
-                 :sy (* (Math/sin hit) (game :speed))})))
+        hit (/ (- (ball :y) racquet) (game :racquet-middle-height))]
+    (merge game {:ball (merge ball {:x (+ (game :racquet-distance) (game :racquet-width))
+                                    :sx (* (Math/cos hit) (game :speed))
+                                    :sy (* (Math/sin hit) (game :speed))})})))
 
 (defn collided-left
   [game]
@@ -124,39 +97,42 @@
     ; The cond form is usually a bad ideia. There should a better way to do this.
     (cond
       ; This requires some serious DRY
-      (colision-racquet-left? ball racquet-left) (collided-racquet-left game)
-      (colision-racquet-right? ball racquet-right) (collided-racquet-right game)
-      (colision-top? ball) (merge ball {:y (+ bleacher-height lane-size) :sy (* -1 (ball :sy))})
-      (colision-bottom? ball) (merge ball {:y (- window-height ball-size) :sy (* -1 (ball :sy))})
+      (colision-racquet-left? game racquet-left) (collided-racquet-left game)
+      (colision-racquet-right? game racquet-right) (collided-racquet-right game)
+      (colision-top? game) (merge game {:ball (merge ball {:y (+ (game :bleacher-height) (game :lane-size))
+                                                           :sy (* -1 (ball :sy))})})
+      (colision-bottom? game) (merge game {:ball (merge ball {:y (- (game :window-height) (game :ball-size))
+                                                              :sy (* -1 (ball :sy))})})
       ; Apply the physics
-      :else (merge ball {:x (+ (ball :x) (* step (ball :sx)))
-                         :y (+ (ball :y) (* step (ball :sy)))}))))
+      :else (merge game {:ball (merge ball {:x (+ (ball :x) (* step (ball :sx)))
+                                            :y (+ (ball :y) (* step (ball :sy)))})}))))
 
 (defn update-racquet
-  [position state step]
-    (let [top (+ bleacher-height racquet-middle-height)
-          bottom (- window-height racquet-middle-height)]
+  [game position state step]
+    (let [top (+ (game :bleacher-height)
+                 (game :racquet-middle-height))
+          bottom (- (game :window-height) (game :racquet-middle-height))]
       (cond
         ; Collisions
         (< position top) top
         (> position bottom) bottom
         ; Position updates
         (and (= (state :up) true) (= (state :down) true)) position
-        (= (state :up) true) (- position (* step racquet-speed))
-        (= (state :down) true) (+ position (* step racquet-speed))
+        (= (state :up) true) (- position (* step (game :racquet-speed)))
+        (= (state :down) true) (+ position (* step (game :racquet-speed)))
         :else position)))
 
 (defn update-game
   [game step]
-  (let [ball (update-ball game step)
-        racquet-left (update-racquet (game :racquet-left-pos) @racquet-left-state step)
-        racquet-right (update-racquet (game :racquet-right-pos) @racquet-right-state step)]
+  (let [game (update-ball game step)
+        racquet-left (update-racquet game (game :racquet-left-pos) @racquet-left-state step)
+        racquet-right (update-racquet game (game :racquet-right-pos) @racquet-right-state step)]
 
     (cond
-      (colision-right? ball) (collided-right game)
-      (colision-left? ball) (collided-left game)
+      (colision-right? game) (collided-right game)
+      (colision-left? game) (collided-left game)
       :else
-      (merge game {:ball ball
+      (merge game {:ball (game :ball)
                    :racquet-left-pos racquet-left
                    :racquet-right-pos racquet-right}))))
 
@@ -172,26 +148,35 @@
     (doto graphics
       ; Clears the screen
       (.setColor Color/BLACK)
-      (.fillRect 0 0 window-width window-height)
+      (.fillRect 0 0 (game :window-width) (game :window-height))
 
       ; Draw the ball
       (.setColor Color/WHITE)
-      (.fillOval (ball :x) (ball :y) ball-size ball-size)
+
+      (.fillOval (ball :x) (ball :y) (game :ball-size) (game :ball-size))
 
       ; Draw the court top lane
-      (.fillRect 0 (- bleacher-height lane-size) court-width lane-size)
+      (.fillRect 0 (- (game :bleacher-height) (game :lane-size)) (game :court-width) (game :lane-size))
 
       ; Draw the court division lane
-      (.fillRect (- (/ court-width 2) lane-size) bleacher-height lane-size court-height)
+      (.fillRect (- (/ (game :court-width) 2) (game :lane-size))
+                 (game :bleacher-height)
+                 (game :lane-size)
+                 (game :court-height))
 
       ; Draw both racquets
-      (.fillRect racquet-distance (- racquet-left-position racquet-middle-height) racquet-width racquet-height)
-      (.fillRect (- window-width (+ racquet-width racquet-distance)) (- racquet-right-position racquet-middle-height) racquet-width racquet-height)
+      (.fillRect (game :racquet-distance)
+                 (- (game :racquet-left-pos) (game :racquet-middle-height))
+                 (game :racquet-width) (game :racquet-height))
+      (.fillRect (- (game :window-width) (+ (game :racquet-width) (game :racquet-distance)))
+                 (- (game :racquet-right-pos) (game :racquet-middle-height))
+                 (game :racquet-width)
+                 (game :racquet-height))
 
       ; Draw both scores
       (.setFont (new Font "Serif" (. Font PLAIN) 50))
-      (.drawString (str (game :player-left-score)) 50 score-height)
-      (.drawString (str (game :player-right-score)) 500 score-height)
+      (.drawString (str (game :player-left-score)) 50 (game :score-height))
+      (.drawString (str (game :player-right-score)) 500 (game :score-height))
 
       ; Draw FPS counter
       (.setFont (new Font "Serif" (. Font PLAIN) 20))
@@ -232,6 +217,35 @@
       \m (swap-key racquet-right-state {:down false})
       nil))
 
+(defn new-game
+  [width height]
+  (let [bleacher-height 200
+        court-height (- height bleacher-height)
+        racquet-height (/ court-height 5)]
+    {:ball {:x 100 :y 300 :sx 0.2 :sy -0.2}
+      :speed 0.5
+      :player-left-score 0
+      :player-right-score 0
+      :racquet-left-pos 400
+      :racquet-right-pos 400
+
+      :window-width width
+      :window-height height
+      :bleacher-height bleacher-height
+
+      :lane-size 5
+      :ball-size 10
+      :score-height (/ bleacher-height 2)
+
+      :court-width width
+      :court-height court-height
+
+      :racquet-distance 10 ; How far from the court side walls
+      :racquet-speed 0.3 ; How fast the racquet moves
+      :racquet-width 10
+      :racquet-height racquet-height
+      :racquet-middle-height (/ racquet-height 2)}))
+
 (defn main
   []
   (let [frame (new JFrame "Clojure Pong")
@@ -266,7 +280,7 @@
 
     (loop [time start-time
            old-time start-time
-           game new-game
+           game (new-game (.. toolkit getScreenSize width) (.. toolkit getScreenSize height))
            fps 0
            frame-counter 0
            one-second 0]
