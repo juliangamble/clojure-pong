@@ -156,9 +156,9 @@
       (.setColor Color/BLACK)
       (.fillRect 0 0 (game :window-width) (game :window-height))
 
-      ; Draw the ball
       (.setColor Color/WHITE)
 
+      ; Draw the ball
       (.fillOval (ball :x) (ball :y) (game :ball-size) (game :ball-size))
 
       ; Draw the court top lane
@@ -186,10 +186,25 @@
 
       ; Draw FPS counter
       (.setFont (new Font "Courier" (. Font PLAIN) 20))
-      (.drawString (str "FPS: " fps) 770 20)
+      (.drawString (str "FPS: " fps) 770 20))
 
+    (when (= @game-state *paused*)
+      (let [font (new Font "Courier" (. Font BOLD) 100)
+            metrics (.getFontMetrics graphics font)
+            paused "GAME PAUSED"
+            paused-width (.stringWidth metrics paused)
+            paused-x (/ (- (game :window-width) paused-width) 2)]
+        (.setFont graphics font)
+        (.setColor graphics Color/RED)
+        (.drawString graphics "GAME PAUSED" paused-x (/ (game :window-height) 2))
+        (.setFont graphics (new Font "Courier" (. Font BOLD) 50))
+        (.drawString graphics "p: Start/Pause" paused-x (+ (/ (game :window-height) 2) 60))
+        (.drawString graphics "a z: Move left racquet" paused-x (+ (/ (game :window-height) 2) 110))
+        (.drawString graphics "j m: Move right racquet" paused-x (+ (/ (game :window-height) 2) 160))
+        (.drawString graphics "q: Quit" paused-x (+ (/ (game :window-height) 2) 210))
+        ))
       ; It is best to dispose() a Graphics object when done with it.
-      (.dispose))
+    (.dispose graphics)
 
     ; Shows the contents of the backbuffer on the screen.
     (.show buffer)))
