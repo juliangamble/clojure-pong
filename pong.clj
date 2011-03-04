@@ -20,6 +20,10 @@
 (def racquet-left-state (atom {:up false :down false}))
 (def racquet-right-state (atom {:up false :down false}))
 
+(def *paused* 0)
+(def *running* 1)
+(def game-state (atom *paused*))
+
 ;;;;;;;;;;;;;;;;; Colision checking ;;;;;;;;;;;;;;;;;
 (defn colision-top?
   [game]
@@ -200,6 +204,8 @@
       ; Exits when 'q' is pressed
       \q (System/exit 0)
 
+      \p (reset! game-state (if (= @game-state *paused*) *running* *paused*))
+
       ; Pressing 'a' or 'z' updates the left racquet state
       \a (swap-key racquet-left-state {:up true})
       \z (swap-key racquet-left-state {:down true})
@@ -231,6 +237,7 @@
       :player-right-score 0
       :racquet-left-pos 400
       :racquet-right-pos 400
+      :state *paused*
 
       :window-width width
       :window-height height
@@ -294,7 +301,7 @@
 
         (recur (System/currentTimeMillis)
                time
-               (update-game game step)
+               (if (= @game-state *running*) (update-game game step) game)
                (if new-fps? frame-counter fps)
                (if new-fps? 0 (inc frame-counter))
                (if new-fps? 0 (+ one-second step)))))))
