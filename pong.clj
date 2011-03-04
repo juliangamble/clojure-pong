@@ -244,7 +244,7 @@
       :court-height court-height
 
       :racquet-distance 10 ; How far from the court side walls
-      :racquet-speed 0.3 ; How fast the racquet moves
+      :racquet-speed 0.6 ; How fast the racquet moves
       :racquet-width 10
       :racquet-height racquet-height
       :racquet-middle-height (/ racquet-height 2)}))
