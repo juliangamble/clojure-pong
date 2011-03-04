@@ -224,7 +224,7 @@
   (let [bleacher-height 200
         court-height (- height bleacher-height)
         racquet-height (/ court-height 5)]
-    {:ball {:x 100 :y 300 :sx 0.2 :sy -0.2}
+    {:ball {:x (/ width 2) :y (+ (/ court-height 2) bleacher-height) :sx 0.3 :sy 0}
       :speed 0.5
       :increment 0.05
       :player-left-score 0
