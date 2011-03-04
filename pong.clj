@@ -72,7 +72,8 @@
         hit (/ (- (ball :y) racquet) (game :racquet-middle-height))]
     (merge game {:ball (merge ball {:x (- (game :window-width) (game :ball-size) (game :racquet-width) (game :racquet-distance))
                                     :sx (* -1 (Math/cos hit) (game :speed))
-                                    :sy (* (Math/sin hit) (game :speed))})})))
+                                    :sy (* (Math/sin hit) (game :speed))})
+                 :speed (+ (game :speed) (game :increment))})))
 
 (defn collided-racquet-left
   [game]
@@ -81,7 +82,8 @@
         hit (/ (- (ball :y) racquet) (game :racquet-middle-height))]
     (merge game {:ball (merge ball {:x (+ (game :racquet-distance) (game :racquet-width))
                                     :sx (* (Math/cos hit) (game :speed))
-                                    :sy (* (Math/sin hit) (game :speed))})})))
+                                    :sy (* (Math/sin hit) (game :speed))})
+                 :speed (+ (game :speed) (game :increment))})))
 
 (defn collided-left
   [game]
@@ -224,6 +226,7 @@
         racquet-height (/ court-height 5)]
     {:ball {:x 100 :y 300 :sx 0.2 :sy -0.2}
       :speed 0.5
+      :increment 0.05
       :player-left-score 0
       :player-right-score 0
       :racquet-left-pos 400
