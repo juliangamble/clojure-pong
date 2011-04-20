@@ -265,30 +265,30 @@
             :ball-starting-sx ball-starting-sx
             :sx ball-starting-sx
             :sy (rand-ball-arc)}
-      :speed 0.5
-      :increment 0.05
-      :player-left-score 0
-      :player-right-score 0
-      :racquet-left-pos 400
-      :racquet-right-pos 400
-      :state *paused*
+     :speed 0.5
+     :increment 0.05
+     :player-left-score 0
+     :player-right-score 0
+     :racquet-left-pos 400
+     :racquet-right-pos 400
+     :state *paused*
 
-      :window-width width
-      :window-height height
-      :bleacher-height bleacher-height
+     :window-width width
+     :window-height height
+     :bleacher-height bleacher-height
 
-      :lane-size 5
-      :ball-size 10
-      :score-height (/ bleacher-height 2)
+     :lane-size 5
+     :ball-size 10
+     :score-height (/ bleacher-height 2)
 
-      :court-width width
-      :court-height court-height
+     :court-width width
+     :court-height court-height
 
-      :racquet-distance 10 ; How far from the court side walls
-      :racquet-speed 0.6 ; How fast the racquet moves
-      :racquet-width 10
-      :racquet-height racquet-height
-      :racquet-middle-height (/ racquet-height 2)}))
+     :racquet-distance 10 ; How far from the court side walls
+     :racquet-speed 0.6 ; How fast the racquet moves
+     :racquet-width 10
+     :racquet-height racquet-height
+     :racquet-middle-height (/ racquet-height 2)}))
 
 (defn main
   []
