@@ -264,7 +264,7 @@
             :y (+ (/ court-height 2) bleacher-height)
             :ball-starting-sx ball-starting-sx
             :sx ball-starting-sx
-            :sy 0}
+            :sy (rand-ball-arc)}
       :speed 0.5
       :increment 0.05
       :player-left-score 0
