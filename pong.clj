@@ -24,6 +24,12 @@
 (def *running* 1)
 (def game-state (atom *paused*))
 
+; On scoring, ball will be thrown from an arc between -0.2 and 0.2
+(defn rand-ball-arc
+  []
+  (/ (- (rand) 0.8) 5)
+)
+
 ;;;;;;;;;;;;;;;;; Colision checking ;;;;;;;;;;;;;;;;;
 (defn colision-top?
   [game]
@@ -65,9 +71,13 @@
 (defn collided-right
   [game]
   (let [ball (game :ball)]
-    (merge game {:ball (merge ball {:x (- (game :window-width) (game :ball-size))
-                                    :sx (* -1 (ball :sx))})
-                 :player-left-score (inc (game :player-left-score))})))
+    (merge game {:ball (merge ball {:x (* (/ (game :window-width) 4) 3)
+                                    :y (+ (game :bleacher-height) (rand-int (game :window-height)))
+                                    :sx (* -1 (ball :sx))
+                                    :sy (rand-ball-arc)
+                                    })
+                 :player-left-score (inc (game :player-left-score))
+                 })))
 
 (defn collided-racquet-right
   [game]
@@ -79,6 +89,17 @@
                                     :sy (* (Math/sin hit) (game :speed))})
                  :speed (+ (game :speed) (game :increment))})))
 
+(defn collided-left
+  [game]
+  (let [ball (game :ball)]
+    (merge game {:ball (merge ball {:x (/ (game :window-width) 4)
+                                    :y (+ (game :bleacher-height) (rand-int (game :window-height)))
+                                    :sx (* -1 (ball :sx))
+                                    :sy (rand-ball-arc)
+                                    })
+                 :player-right-score (inc (game :player-right-score))
+                 })))
+
 (defn collided-racquet-left
   [game]
   (let [ball (game :ball)
@@ -88,13 +109,6 @@
                                     :sx (* (Math/cos hit) (game :speed))
                                     :sy (* (Math/sin hit) (game :speed))})
                  :speed (+ (game :speed) (game :increment))})))
-
-(defn collided-left
-  [game]
-  (let [ball (game :ball)]
-    (merge game {:ball (merge ball {:x 0
-                                    :sx (* -1 (ball :sx))})
-                 :player-right-score (inc (game :player-right-score))})))
 
 ;;;;;;;;;;;;;;;;; Object updates ;;;;;;;;;;;;;;;;;
 (defn update-ball
