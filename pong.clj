@@ -73,7 +73,7 @@
   (let [ball (game :ball)]
     (merge game {:ball (merge ball {:x (* (/ (game :window-width) 4) 3)
                                     :y (+ (game :bleacher-height) (rand-int (game :window-height)))
-                                    :sx (* -1 (ball :sx))
+                                    :sx (- (ball :ball-starting-sx))
                                     :sy (rand-ball-arc)
                                     })
                  :player-left-score (inc (game :player-left-score))
@@ -94,7 +94,7 @@
   (let [ball (game :ball)]
     (merge game {:ball (merge ball {:x (/ (game :window-width) 4)
                                     :y (+ (game :bleacher-height) (rand-int (game :window-height)))
-                                    :sx (* -1 (ball :sx))
+                                    :sx (ball :ball-starting-sx)
                                     :sy (rand-ball-arc)
                                     })
                  :player-right-score (inc (game :player-right-score))
@@ -258,8 +258,13 @@
   [width height]
   (let [bleacher-height 200
         court-height (- height bleacher-height)
-        racquet-height (/ court-height 5)]
-    {:ball {:x (/ width 2) :y (+ (/ court-height 2) bleacher-height) :sx 0.3 :sy 0}
+        racquet-height (/ court-height 5)
+        ball-starting-sx 0.3]
+    {:ball {:x (/ width 2)
+            :y (+ (/ court-height 2) bleacher-height)
+            :ball-starting-sx ball-starting-sx
+            :sx ball-starting-sx
+            :sy 0}
       :speed 0.5
       :increment 0.05
       :player-left-score 0
