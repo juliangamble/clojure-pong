@@ -339,5 +339,3 @@
                (if new-fps? frame-counter fps)
                (if new-fps? 0 (inc frame-counter))
                (if new-fps? 0 (+ one-second step)))))))
-
-(main)
