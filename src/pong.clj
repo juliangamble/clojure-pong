@@ -1,7 +1,9 @@
 (ns pong
   (:import (javax.swing JFrame)
            (java.awt Color Font Dimension GraphicsEnvironment Toolkit)
-           (java.awt.event KeyListener)))
+           (java.awt.event KeyListener))
+  (:gen-class
+    :main main))
 
 ; The pong in Clojure
 ;
@@ -290,7 +292,7 @@
      :racquet-height racquet-height
      :racquet-middle-height (/ racquet-height 2)}))
 
-(defn main
+(defn -main
   []
   (let [frame (new JFrame "Clojure Pong")
         start-time (System/currentTimeMillis)

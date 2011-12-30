@@ -4,4 +4,5 @@
 	:dependencies [[clojure "1.2.0"]
 				   [clojure-contrib "1.2.0"]]
 	:source-path "src"
+	:main pong
 	)
