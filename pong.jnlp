@@ -1,18 +1,15 @@
 <?xml version="1.0" encoding="utf-8"?>
 <!-- JNLP File for Pong -->
 
-<jnlp <!-- codebase="https://github.com/juliangamble/clojure-pong" -->
-      codebase="file:///c:/Users/julian/Documents/Projects/clojure-pong/" 
-      <!-- href="https://sites.google.com/site/juliangamble/Home/pong.jnlp"> -->
-       href="file:///c:/Users/julian/Documents/Projects/clojure-pong/pong.jnlp"> 
+<jnlp codebase="https://github.com/juliangamble/clojure-pong" 
+      href="https://sites.google.com/site/juliangamble/Home/pong.jnlp"> 
   <information>
     <title>Pong</title>
     <vendor>Machiavellian</vendor>
   </information>
   <resources>
     <j2se version="1.4+" />
-    <!--<jar href="/files/pong/pong.jar"/>-->
-    <jar href="file:///c:/Users/julian/Documents/Projects/clojure-pong/pong.jar"/>
+    <jar href="https://sites.google.com/site/juliangamble/Home/pong.jar"/>
   </resources>
   <application-desc main-class="pong"/>
   <offline-allowed/>
