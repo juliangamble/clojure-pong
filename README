@@ -1,3 +1,6 @@
+You can read a blog post about this here:
+http://juliangamble.com/blog/2011/12/30/clojure-gui-demo-of-pong/
+
 This project is a fork from clojure-pong by @jmgimeno.
 
 The point here is to add Java Web start to enable it to be demoed to a wider audience
